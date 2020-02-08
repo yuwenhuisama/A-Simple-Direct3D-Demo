@@ -14,4 +14,26 @@ namespace D3DHelper {
 
         return mtWorld;
     }
+
+    std::wstring StringToWString(const std::string& str) {
+        std::wstring result;  
+        auto len = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), NULL, 0);  
+        auto buffer = new WCHAR[len + 1];  
+        MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), buffer, len);  
+        buffer[len] = '\0';
+        result.append(buffer);  
+        delete[] buffer;  
+        return result;  
+    }
+
+    std::string WStringToString(const std::wstring &wstr) {
+        std::string result;  
+        auto len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);  
+        auto buffer = new char[len + 1];  
+        WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), static_cast<int>(wstr.size()), buffer, len, NULL, NULL);  
+        buffer[len] = '\0';  
+        result.append(buffer);  
+        delete[] buffer;  
+        return result; 
+    }
 }

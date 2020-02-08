@@ -10,6 +10,7 @@ enum class RenderCommandType {
     SetWorldMatrix,
     SetInstancedInfo,
     SetBaseModelRenderInfo,
+    SetTexture,
 };
 
 struct RenderCommand {

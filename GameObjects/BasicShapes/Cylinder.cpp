@@ -49,7 +49,21 @@ void Cylinder::PreInitialize() {
             float s = sinf(j * theta);
 
             vMeshVertex.m_f3Pos = DirectX::XMFLOAT3(r * c, y, r * s);
-            vMeshVertex.m_fColor = Colors::RandomColor();
+            // vMeshVertex.m_fColor = Colors::RandomColor();
+
+            vMeshVertex.m_f2Tex0.x = static_cast<float>(j) / m_uSliceCount;
+            vMeshVertex.m_f2Tex0.y = 1.0f - static_cast<float>(i) / m_uStackCount;
+
+            vMeshVertex.m_f3Tangent = DirectX::XMFLOAT3(-s, 0.0f, c);
+
+            float dr = m_fBottomRadius - m_fTopRadius;
+            DirectX::XMFLOAT3 bitangent(dr * c, -m_fHeight, dr * s);
+
+            auto T = DirectX::XMLoadFloat3(&vMeshVertex.m_f3Tangent);
+            auto B = DirectX::XMLoadFloat3(&bitangent);
+            auto N = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(T, B));
+
+            DirectX::XMStoreFloat3(&vMeshVertex.m_f3Normal, N);
 
             m_msMesh.AppendVertex(vMeshVertex);
         }
@@ -83,13 +97,16 @@ void Cylinder::_BuildTopCap() {
         float x = m_fTopRadius * cosf(i * theta);
         float z = m_fTopRadius * sinf(i * theta);
 
+        float u = x / m_fHeight + 0.5f;
+        float v = z / m_fHeight + 0.5f;
+
         m_msMesh.AppendVertex(
-            { {x, y, z}, Colors::RandomColor() }
+            { {x, y, z}, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { u, v } }
         );
     }
 
     m_msMesh.AppendVertex(
-        { {0.0f, y, 0.0f}, Colors::RandomColor() }
+        { {0.0f, y, 0.0f}, { 0.0f, 1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f}, { 0.5f, 0.5f } }
     );
 
     UINT uCenterIndex = m_msMesh.GetVertexesSize() - 1;
@@ -111,13 +128,16 @@ void Cylinder::_BuidBottomCap() {
         float x = m_fBottomRadius * cosf(i * theta);
         float z = m_fBottomRadius * sinf(i * theta);
 
+        float u = x / m_fHeight + 0.5f;
+        float v = z / m_fHeight + 0.5f;
+
         m_msMesh.AppendVertex(
-            { {x, y, z}, Colors::RandomColor() }
+            { {x, y, z}, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, { u, v } }
         );
     }
 
     m_msMesh.AppendVertex(
-        { {0.0f, y, 0.0f}, Colors::RandomColor() }
+        { {0.0f, y, 0.0f}, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f}, { 0.5f, 0.5f } }
     );
 
     UINT uCenterIndex = m_msMesh.GetVertexesSize() - 1;

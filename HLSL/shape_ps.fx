@@ -1,11 +1,13 @@
+Texture2D colorMap : register(t0);
+SamplerState colorSampler : register(s0);
+
 struct PixelInput
 {
 	float4 PosH  : SV_POSITION;
-    float4 Color : COLOR;
+    float2 Tex : TEXCOORD0;
 };
 
 float4 PSMain(PixelInput pin) : SV_Target
 {
-    return pin.Color;
-    // return float4(0, 0, 0, 1.0f);
+    return colorMap.Sample(colorSampler, pin.Tex);
 }

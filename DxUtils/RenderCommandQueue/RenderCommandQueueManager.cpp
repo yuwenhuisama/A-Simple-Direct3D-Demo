@@ -71,6 +71,11 @@ void RenderCommandQueueManager::_SetBaseModelRenderInfo(RenderCommand& rcCommand
     m_mtBuffer = std::any_cast<std::function<DirectX::XMMATRIX(void)>>(rcCommand.m_objRenderInfo)();
 }
 
+void RenderCommandQueueManager::_SetTexture(RenderCommand& rcCommand) {
+    auto pTexture = std::any_cast<std::shared_ptr<Texture>>(rcCommand.m_objRenderInfo);
+    Direct3DManager::Instance().ApplyTexture(pTexture);
+}
+
 void RenderCommandQueueManager::Render() {
     if (!m_lsQueue.empty()) {
         auto iter = m_lsQueue.begin();
@@ -95,6 +100,9 @@ void RenderCommandQueueManager::Render() {
                     break;
                 case RenderCommandType::SetBaseModelRenderInfo:
                     this->_SetBaseModelRenderInfo(*iter);
+                    break;
+                case RenderCommandType::SetTexture:
+                    this->_SetTexture(*iter);
                     break;
                 default:
                     break;

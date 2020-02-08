@@ -65,6 +65,12 @@ void Shape::Render() {
     );
 
     RenderCommandQueueManager::Instance().Push(
+        RenderCommand { RenderCommandType::SetTexture,
+            m_pTexture,
+        }
+    );
+
+    RenderCommandQueueManager::Instance().Push(
         RenderCommand { RenderCommandType::Render,
             std::make_tuple(this->m_pVertexBuffer, this->m_pIndexedBuffer, sizeof(Vertex), this->GetIndicesCount())
         }

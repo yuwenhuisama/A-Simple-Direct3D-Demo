@@ -26,8 +26,8 @@ UINT Sphare::GetIndicesCount() {
 void Sphare::PreInitialize() {
     m_msMesh.Clear();    
 
-    Vertex vtTopVertex { { 0.0f, +m_fRadius, 0.0f }, Colors::Red };
-    Vertex vtBottomVertex { { 0.0f, -m_fRadius, 0.0f }, Colors::Red };
+    Vertex vtTopVertex { { 0.0f, +m_fRadius, 0.0f }, { 0.0f, +1.0f, 0.0f }, { 1.0f, 0.0, 0.0 }, { 0.0, 0.0f } };
+    Vertex vtBottomVertex { { 0.0f, -m_fRadius, 0.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 0.0, 0.0 }, { 0.0, 1.0f } };
 
     m_msMesh.AppendVertex(vtTopVertex);
 
@@ -46,7 +46,19 @@ void Sphare::PreInitialize() {
             vtMeshVertex.m_f3Pos.y = m_fRadius * cosf(phi);
             vtMeshVertex.m_f3Pos.z = m_fRadius * sinf(phi) * sinf(theta);
 
-            vtMeshVertex.m_fColor = Colors::RandomColor();
+            // vtMeshVertex.m_fColor = Colors::RandomColor();
+            vtMeshVertex.m_f3Tangent.x = -m_fRadius * sinf(phi) * sinf(theta);
+            vtMeshVertex.m_f3Tangent.y = 0.0f;
+            vtMeshVertex.m_f3Tangent.z = +m_fRadius * sinf(phi) * cosf(theta);
+
+            auto T = DirectX::XMLoadFloat3(&vtMeshVertex.m_f3Tangent);
+            DirectX::XMStoreFloat3(&vtMeshVertex.m_f3Tangent, DirectX::XMVector3Normalize(T));
+
+            auto P = DirectX::XMLoadFloat3(&vtMeshVertex.m_f3Pos);
+            DirectX::XMStoreFloat3(&vtMeshVertex.m_f3Normal, DirectX::XMVector3Normalize(P));
+
+            vtMeshVertex.m_f2Tex0.x = theta / DirectX::XM_2PI;
+            vtMeshVertex.m_f2Tex0.y = phi / DirectX::XM_PI;
 
             m_msMesh.AppendVertex(vtMeshVertex);
         }

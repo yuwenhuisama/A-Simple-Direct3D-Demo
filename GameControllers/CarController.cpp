@@ -36,7 +36,12 @@ void CarController::Update() {
         m_fAngle += 0.01f;
     }
 
-    m_fSpeed = std::clamp(m_fSpeed, -0.1f, 0.1f);
+    // m_fSpeed = std::clamp(m_fSpeed, -0.5f, 0.5f);
+    if (m_fSpeed < -0.5f) {
+        m_fSpeed = -0.5f;
+    } else if (m_fSpeed > 0.5f){
+        m_fSpeed = 0.5f;
+    }
 
     if (std::abs(m_fSpeed) <= 1e-4f) {
         m_fSpeed = 0;

@@ -55,23 +55,34 @@ void JsonModel::_ProcessJsonValue(rapidjson::Value::Object& dcRoot) {
             auto fTopRadius = dcRoot.FindMember("top_radius")->value.GetFloat();
             auto fBottomRadius = dcRoot.FindMember("bottom_radius")->value.GetFloat();
             auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
+            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
             auto iiList = this->_GetInstancedInfo(dcRoot);
 
             auto pInnterCylindre = std::make_shared<Cylinder>(fTopRadius, fBottomRadius, fHeight, 100, 100);
             pInnterCylindre->Initialize();
+
+            auto pTexture = std::make_shared<Texture>();
+            pTexture->Load(strTexture);
+            pInnterCylindre->SetTexture(pTexture);
+
             auto pCylinder = std::make_shared<InstancedGameObject>(pInnterCylindre);
             pCylinder->GetAssignedInstancedInfo() = iiList;
 
             this->AddChild(pCylinder);
-
         } else if (strType == "cuboid") {
             auto fWidth = dcRoot.FindMember("width")->value.GetFloat();
             auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
             auto fDepth = dcRoot.FindMember("depth")->value.GetFloat();
+            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
             auto iiList = this->_GetInstancedInfo(dcRoot);
 
             auto pInnerCuboid = std::make_shared<Cuboid>(fWidth, fHeight, fDepth);
             pInnerCuboid->Initialize();
+
+            auto pTexture = std::make_shared<Texture>();
+            pTexture->Load(strTexture);
+            pInnerCuboid->SetTexture(pTexture);
+
             auto pCuboid = std::make_shared<InstancedGameObject>(pInnerCuboid);
             pCuboid->GetAssignedInstancedInfo() = iiList;
 

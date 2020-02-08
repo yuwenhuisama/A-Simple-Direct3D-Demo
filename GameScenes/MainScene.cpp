@@ -2,7 +2,7 @@
 #include "GameObjects/BasicShapes/Cuboid.h"
 #include "GameObjects/BasicShapes/Cylinder.h"
 #include "GameObjects/BasicShapes/Sphare.h"
-#include "GameObjects/BasicShapes/Triangle.h"
+// #include "GameObjects/BasicShapes/Triangle.h"
 // #include "GameObjects/JsonObjects/Car.h"
 #include "GameControllers/CarController.h"
 

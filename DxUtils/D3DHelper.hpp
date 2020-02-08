@@ -1,9 +1,12 @@
 #ifndef _H_D3DHELPER_
 #define _H_D3DHELPER_
 
-#include <array>
 #include <DirectXMath.h>
 #include <functional>
+
+#include <string>
+
+#include <Windows.h>
 
 namespace D3DHelper {
     template<class T>
@@ -15,6 +18,9 @@ namespace D3DHelper {
     }
 
     DirectX::XMMATRIX CalcWorldMatrix(const DirectX::XMFLOAT3& v3Translation, const  DirectX::XMFLOAT3& v3Rotation, const  DirectX::XMFLOAT3& v3Scale);
+
+    std::wstring StringToWString(const std::string& str);
+    std::string WStringToString(const std::wstring &wstr);
 };
 
 struct InstancedInfo {

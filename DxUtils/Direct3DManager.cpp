@@ -4,6 +4,8 @@
 
 #include "DxUtils/RenderCommandQueue/RenderCommandQueueManager.h"
 
+#include "DxUtils/WicTextureLoader/WICTextureLoader.h"
+
 Direct3DManager& Direct3DManager::Instance() {
     static Direct3DManager d3dmManager;
     return d3dmManager;
@@ -157,6 +159,25 @@ faild_exit:
     return false;
 }
 
+bool Direct3DManager::_InitSamplerState() {
+    D3D11_SAMPLER_DESC dsdColorMapDesc;
+    memset(&dsdColorMapDesc, 0, sizeof(D3D11_SAMPLER_DESC));
+
+    dsdColorMapDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    dsdColorMapDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    dsdColorMapDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    dsdColorMapDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    dsdColorMapDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    dsdColorMapDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    const auto result = m_pDevice->CreateSamplerState(&dsdColorMapDesc, &m_pColorMapSampler);
+    if (FAILED(result)) {
+        return false;
+    }
+
+    return true;
+}
+
 LRESULT Direct3DManager::_WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		switch (message) {
         case WM_CREATE: {
@@ -269,6 +290,10 @@ bool Direct3DManager::Initialize(HINSTANCE hInstance,UINT uWidth, UINT uHeight, 
     }
 
     if (!_InitDepthStencilView(uWidth, uHeight, bEnable4xMsaa)) {
+        goto failed_exit;
+    }
+
+    if (!_InitSamplerState()) {
         goto failed_exit;
     }
 
@@ -415,7 +440,7 @@ bool Direct3DManager::CreatePixelShader(ID3DBlob* pBlob, ID3D11PixelShader*& pPi
 }
 
 bool Direct3DManager::CreateVertexShader(ID3DBlob* pBlob, ID3D11VertexShader*& pVertexShader) {
-    auto result = m_pDevice->CreateVertexShader(
+    const auto result = m_pDevice->CreateVertexShader(
         pBlob->GetBufferPointer(), 
         pBlob->GetBufferSize(),
         nullptr,
@@ -425,4 +450,26 @@ bool Direct3DManager::CreateVertexShader(ID3DBlob* pBlob, ID3D11VertexShader*& p
         return false;
     }
     return true;
+}
+
+bool Direct3DManager::CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Resource*& pTexture) {
+    const auto result = DirectX::CreateWICTextureFromFile(
+        m_pDevice,
+        strvFilePath.data(),
+        &pTexture,
+        &pResourceView
+    );
+
+    if (FAILED(result)) {
+        return false;
+    }
+
+    m_pDeviceContext->PSSetSamplers(0, 1, &m_pColorMapSampler);
+
+    return true;
+}
+
+void Direct3DManager::ApplyTexture(std::shared_ptr<Texture> pTexture) {
+    auto pShaderResrouceView = pTexture->GetShaderResourceView();
+    m_pDeviceContext->PSSetShaderResources(0, 1, &pShaderResrouceView);
 }

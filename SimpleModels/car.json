@@ -8,6 +8,7 @@
             "width" : 1.0,
             "height" : 0.5,
             "depth" : 2.0,
+            "texture" : "Textures/chouyou.jpg",
             "render_info" : [
                 {
                     "position": [0.0, 0.0, 0.0],
@@ -22,6 +23,7 @@
             "top_radius": 0.3,
             "bottom_radius": 0.3,
             "height": 0.3,
+            "texture" : "Textures/likailikai.jpg",
             "render_info" : [
                 {
                     "position": [ 0.65, 0.0, 0.5 ],

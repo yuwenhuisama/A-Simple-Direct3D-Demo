@@ -29,6 +29,7 @@ private:
     void _EndInstance(RenderCommand& rcCommand);
     void _SetInstancedInfo(RenderCommand& rcCommand);
     void _SetBaseModelRenderInfo(RenderCommand& rcCommand);
+    void _SetTexture(RenderCommand& rcCommand);
 
 public:
     void Initialize();

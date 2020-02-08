@@ -10,35 +10,35 @@ void Cuboid::PreInitialize() {
     const auto d = m_fDepth / 2.0f;
 
     Vertex arrVertecis[] = {
-        { DirectX::XMFLOAT3(-w, -h, -d), (Colors::White)  },
-        { DirectX::XMFLOAT3(-w, +h, -d), (Colors::Black)  },
-        { DirectX::XMFLOAT3(+w, +h, -d), (Colors::Red)    },
-        { DirectX::XMFLOAT3(+w, -h, -d), (Colors::Green)  },
+        { DirectX::XMFLOAT3(-w, -h, -d), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(-w, +h, -d), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, +h, -d), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, -h, -d), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
 
-        { DirectX::XMFLOAT3(-w, -h, +d), (Colors::Blue)   },
-        { DirectX::XMFLOAT3(+w, -h, +d), (Colors::Yellow) },
-        { DirectX::XMFLOAT3(+w, +h, +d), (Colors::Cyan)   },
-        { DirectX::XMFLOAT3(-w, +h, +d), (Colors::Magenta)},
+        { DirectX::XMFLOAT3(-w, -h, +d), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
+        { DirectX::XMFLOAT3(+w, -h, +d), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(+w, +h, +d), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(-w, +h, +d), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
 
-        { DirectX::XMFLOAT3(-w, +h, -d), (Colors::White)  },
-        { DirectX::XMFLOAT3(-w, +h, +d), (Colors::Black)  },
-        { DirectX::XMFLOAT3(+w, +h, +d), (Colors::Red)    },
-        { DirectX::XMFLOAT3(+w, +h, -d), (Colors::Green)  },
+        { DirectX::XMFLOAT3(-w, +h, -d), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(-w, +h, +d), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, +h, +d), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, +h, -d), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
 
-        { DirectX::XMFLOAT3(-w, -h, -d), (Colors::Blue)   },
-        { DirectX::XMFLOAT3(+w, -h, -d), (Colors::Yellow) },
-        { DirectX::XMFLOAT3(+w, -h, +d), (Colors::Cyan)   },
-        { DirectX::XMFLOAT3(-w, -h, +d), (Colors::Magenta)},
+        { DirectX::XMFLOAT3(-w, -h, +d), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
+        { DirectX::XMFLOAT3(-w, +h, +d), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(-w, +h, -d), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(-w, -h, -d), DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
 
-        { DirectX::XMFLOAT3(-w, -h, +d), (Colors::White)  },
-        { DirectX::XMFLOAT3(-w, +h, +d), (Colors::Black)  },
-        { DirectX::XMFLOAT3(-w, +h, -d), (Colors::Red)    },
-        { DirectX::XMFLOAT3(-w, -h, -d), (Colors::Green)  },
+        { DirectX::XMFLOAT3(-w, -h, -d), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(+w, -h, -d), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, -h, +d), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
+        { DirectX::XMFLOAT3(-w, -h, +d), DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
 
-        { DirectX::XMFLOAT3(+w, -h, -d), (Colors::Blue)   },
-        { DirectX::XMFLOAT3(+w, +h, -d), (Colors::Yellow) },
-        { DirectX::XMFLOAT3(+w, +h, +d), (Colors::Cyan)   },
-        { DirectX::XMFLOAT3(+w, -h, +d), (Colors::Magenta)},
+        { DirectX::XMFLOAT3(+w, -h, -d), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+        { DirectX::XMFLOAT3(+w, +h, -d), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT2(0.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, +h, +d), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT2(1.0f, 0.0f) },
+        { DirectX::XMFLOAT3(+w, -h, +d), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
     };
 
     m_msMesh.GetVertexes().assign(&arrVertecis[0], &arrVertecis[std::size(arrVertecis)]);

@@ -12,7 +12,9 @@
 #include "DxUtils/Shaders/PixelShaderBase.h"
 #include "DxUtils/Shaders/VertexShaderBase.h"
 
-#include <DxUtils/D3DHelper.hpp>
+#include "DxUtils/D3DHelper.hpp"
+
+#include "DxUtils/Texture.h"
 
 #include <string>
 #include <memory>
@@ -34,6 +36,8 @@ private:
 
     ID3D11Texture2D* m_pDepthStencilBuffer = nullptr;
 
+    ID3D11SamplerState* m_pColorMapSampler = nullptr;
+
     HWND m_hWND = nullptr;
     HINSTANCE m_hInstance = nullptr;
 
@@ -49,6 +53,7 @@ private:
     Direct3DManager() = default;
     ~Direct3DManager() = default;
 
+    bool _InitSamplerState();
     bool _InitSwapChain(UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
     bool _InitRenderTargetView();
     bool _InitDepthStencilView(UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
@@ -77,11 +82,11 @@ public:
     void Update();
     void _Render();
 
+    void SetVertexShader(std::shared_ptr<VertexShaderBase> pVertexShader);
     void SetPixelShader(std::shared_ptr<PixelShaderBase> pPixelShader);
+
     std::shared_ptr<VertexShaderBase> GetVertexShader() const { return m_pVertexShader; }
     std::shared_ptr<PixelShaderBase> GetPixelShader() const { return m_pPixelShader; }
-
-    void SetVertexShader(std::shared_ptr<VertexShaderBase> pVertexShader);
 
     bool CreateBuffer(const D3D11_BUFFER_DESC& dscBufferDesc,
         const D3D11_SUBRESOURCE_DATA& ssInitData,
@@ -103,6 +108,10 @@ public:
         ID3D11Buffer* pIndexedBuffer,
         UINT nStride,
         UINT nIndexCount);
+
+    bool CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Resource*& pTexture);
+
+    void ApplyTexture(std::shared_ptr<Texture> pTexture);
 
     ApplicationState GetApplicationState() const {
         return m_eState;

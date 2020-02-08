@@ -35,11 +35,13 @@ aux_source_directory(./GameObjects/JsonObjects SRC_GAMEOBJECTS_JSONOBJECTS)
 aux_source_directory(./GameScenes SRC_GAMESCENES)
 aux_source_directory(./GameUtils SRC_GAMEUTILS)
 aux_source_directory(./GameControllers SRC_GAMECONTROLLERS)
+aux_source_directory(./DxUtils/WicTextureLoader SRC_DXUTILS_WICTEXTURELOADER)
 
 add_executable(DirectX11Task
     WIN32
     main.cpp
     ${SRC_DXUTILS}
+    ${SRC_DXUTILS_WICTEXTURELOADER}
     ${SRC_DXUTILS_SHADERS}
     ${SRC_DXUTILS_SHADERS_EFFECT}
     ${SRC_DXUTILS_RENDERCOMMANDQUEUE}
