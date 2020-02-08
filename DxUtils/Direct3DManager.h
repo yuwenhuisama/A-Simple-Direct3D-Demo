@@ -9,8 +9,6 @@
 #include <wincodec.h>
 #include <wrl.h>
 #include <dwrite_3.h>
-#include "DxEffect/d3dx11effect.h"
-#include "DxUtils/Shaders/Effect/Effect.h"
 #include "DxUtils/Shaders/PixelShaderBase.h"
 #include "DxUtils/Shaders/VertexShaderBase.h"
 
@@ -41,7 +39,6 @@ private:
 
     ApplicationState m_eState = ApplicationState::Pending;
 
-    std::shared_ptr<Effect> m_pEffect = nullptr;
     std::shared_ptr<VertexShaderBase> m_pVertexShader = nullptr;
     std::shared_ptr<PixelShaderBase> m_pPixelShader = nullptr;
 
@@ -80,7 +77,6 @@ public:
     void Update();
     void _Render();
 
-    void SetEffect(std::shared_ptr<Effect> pEffect);
     void SetPixelShader(std::shared_ptr<PixelShaderBase> pPixelShader);
     std::shared_ptr<VertexShaderBase> GetVertexShader() const { return m_pVertexShader; }
     std::shared_ptr<PixelShaderBase> GetPixelShader() const { return m_pPixelShader; }
@@ -92,11 +88,6 @@ public:
         ID3D11Buffer*& pBuffer);
     bool CreateBuffer(const D3D11_BUFFER_DESC& dscBufferDesc,
         ID3D11Buffer*& pBuffer);
-
-    bool CreateEffectFromFile(const std::wstring& wstrFileName, ID3DX11Effect*& pEffect);
-    bool CreateInputLayout(const std::vector<D3D11_INPUT_ELEMENT_DESC>& vcInputLayoutDescArr,
-        const D3DX11_PASS_DESC& descPassDesc,
-        ID3D11InputLayout*& pInputLayout);
     
     bool CreateInputLayout(const D3D11_INPUT_ELEMENT_DESC* vcInputLayoutDescArr,
         UINT uDescArrSize,

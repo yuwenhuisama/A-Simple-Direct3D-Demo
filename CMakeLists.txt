@@ -16,12 +16,8 @@ ENDFOREACH (LIB)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "RELEASE" OR ${CMAKE_BUILD_TYPE} STREQUAL "Release")
     link_libraries(${CMAKE_FIND_ROOT_PATH}/lib/DirectXTex.lib)
-    link_directories(./Libs)
-    link_libraries(Effects11)
 elseif (${CMAKE_BUILD_TYPE} STREQUAL "DEBUG" OR ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     link_libraries(${CMAKE_FIND_ROOT_PATH}/debug/lib/DirectXTex.lib)
-    link_directories(./Libs)
-    link_libraries(Effects11d)
 endif()
 
 include(CTest)

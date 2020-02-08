@@ -351,62 +351,12 @@ bool Direct3DManager::CreateBuffer(
     return true;
 }
 
-bool Direct3DManager::CreateEffectFromFile(
-    const std::wstring& wstrFileName,
-    ID3DX11Effect*& pEffect) {
-
-    DWORD dwShaderFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)
-    dwShaderFlags |= D3D11_SHADER_DEBUG_REG_UAV;
-#endif // DEBUG
-
-    ID3DBlob* pCompilationMsgs = nullptr;
-
-    auto result = D3DX11CompileEffectFromFile(
-        wstrFileName.c_str(), 
-        nullptr, nullptr, dwShaderFlags, 0,
-        m_pDevice, &pEffect, &pCompilationMsgs);
-
-    if(pCompilationMsgs != 0 ) {
-        MessageBoxA(0, static_cast<char*>(pCompilationMsgs->GetBufferPointer()), 0, 0);
-        D3DHelper::SafeRelease(pCompilationMsgs);
-    }
-
-    if (FAILED(result)) {    
-        pEffect = nullptr;
-        return false;
-    }
-    return true;
-}
-
-void Direct3DManager::SetEffect(std::shared_ptr<Effect> pEffect) {
-    m_pEffect = pEffect;
-}
-
 void Direct3DManager::SetPixelShader(std::shared_ptr<PixelShaderBase> pPixelShader) {
     m_pPixelShader = pPixelShader;
 }
 
 void Direct3DManager::SetVertexShader(std::shared_ptr<VertexShaderBase> pVertexShader) {
     m_pVertexShader = pVertexShader;
-}
-
-bool Direct3DManager::CreateInputLayout(const std::vector<D3D11_INPUT_ELEMENT_DESC>& vcInputLayoutDescArr,
-    const D3DX11_PASS_DESC& descPassDesc,
-    ID3D11InputLayout*& pInputLayout) {
-    
-    auto result = m_pDevice->CreateInputLayout(&vcInputLayoutDescArr[0],
-        vcInputLayoutDescArr.size(),
-        descPassDesc.pIAInputSignature,
-        descPassDesc.IAInputSignatureSize,
-        &pInputLayout);
-    
-    if (FAILED(result)) {
-        pInputLayout = nullptr;
-        return false;
-    }
-
-    return true;
 }
 
 bool Direct3DManager::CreateInputLayout(
@@ -424,37 +374,6 @@ bool Direct3DManager::CreateInputLayout(
     if (FAILED(result)) {
         pInputLayout = nullptr;
         return false;
-    }
-
-    return true;
-}
-
-bool Direct3DManager::DrawObjectWithEffect(
-    ID3D11Buffer* pVertexBuffer,
-    ID3D11Buffer* pIndexedBuffer,
-    UINT nStride,
-    UINT nIndexCount) {
-
-    const auto& vcInputLayouts = m_pEffect->GetInputLayouts();
-
-    // default only use 1 layout
-    auto pLayout = vcInputLayouts[0];
-
-    m_pDeviceContext->IASetInputLayout(pLayout);
-    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    UINT nOffset = 0;
-
-    m_pDeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &nStride, &nOffset);
-    m_pDeviceContext->IASetIndexBuffer(pVertexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-    auto pTech = m_pEffect->GetTechnique();
-    D3DX11_TECHNIQUE_DESC tdescTechDesc;
-    pTech->GetDesc(&tdescTechDesc);
-
-    for (auto i = 0u; i < tdescTechDesc.Passes; ++i) {
-        pTech->GetPassByIndex(i)->Apply(0, m_pDeviceContext);
-        m_pDeviceContext->DrawIndexed(nIndexCount, 0, 0);
     }
 
     return true;
