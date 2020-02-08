@@ -1,0 +1,49 @@
+{
+    "tag" : "car",
+    "type" : "conbinant",
+    "children" : [
+        {
+            "tag" : "body",
+            "type" : "cuboid",
+            "width" : 1.0,
+            "height" : 0.5,
+            "depth" : 2.0,
+            "render_info" : [
+                {
+                    "position": [0.0, 0.0, 0.0],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [1.0, 1.0, 1.0]
+                }
+            ]
+        },
+        {
+            "tag" : "wheel",
+            "type" : "cylinder",
+            "top_radius": 0.3,
+            "bottom_radius": 0.3,
+            "height": 0.3,
+            "render_info" : [
+                {
+                    "position": [ 0.65, 0.0, 0.5 ],
+                    "rotation": [ 0.0, 0.0, 0.5 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
+                },
+                {
+                    "position": [ -0.65, 0.0, 0.5 ],
+                    "rotation": [ 0.0, 0.0, 0.5 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
+                },
+                {
+                    "position": [ 0.65, 0.0, -0.5 ],
+                    "rotation": [ 0.0, 0.0, 0.5 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
+                },
+                {
+                    "position": [ -0.65, 0.0, -0.5 ],
+                    "rotation": [ 0.0, 0.0, 0.5 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
+                }
+            ]
+        }
+    ]
+}

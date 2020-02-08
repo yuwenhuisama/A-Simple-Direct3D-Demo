@@ -1,0 +1,33 @@
+{
+    "tasks": [
+        {
+            "label": "clang build active file",
+            "type": "shell",
+            "command": "/usr/local/clang",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "/usr/local"
+            }
+        },
+        {
+            "label": "msvc build",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": ["/EHsc", "/Zi", "/Fe:", "helloworld.exe", "helloworld.cpp"],
+            "group": {
+              "kind": "build",
+              "isDefault": true
+            },
+            "presentation": {
+              "reveal": "always"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "version": "2.0.0"
+}
