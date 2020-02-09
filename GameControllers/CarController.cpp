@@ -10,11 +10,11 @@ void CarController::Update() {
     auto& iManager = InputManager::Instance();
 
     // move up
-    if (iManager.IsKeyDown(DIK_UP)) {
+    if (iManager.IsKeyDown(DIK_W)) {
         m_fSpeed += 0.01f;
     }
     // move back
-    else if (iManager.IsKeyDown(DIK_DOWN)) {
+    else if (iManager.IsKeyDown(DIK_S)) {
         m_fSpeed -= 0.01f;
     }
     else {
@@ -26,12 +26,12 @@ void CarController::Update() {
     }
     
     // move left
-    if (iManager.IsKeyDown(DIK_LEFT)) {
+    if (iManager.IsKeyDown(DIK_A)) {
         m_v3Direction = DirectX::XMVector3Normalize(DirectX::XMVector3Transform(m_v3Direction, DirectX::XMMatrixRotationY(-0.01f)));
         m_fAngle -= 0.01f;
     }
     // move right
-    else if (iManager.IsKeyDown(DIK_RIGHT)) {
+    else if (iManager.IsKeyDown(DIK_D)) {
         m_v3Direction = DirectX::XMVector3Normalize(DirectX::XMVector3Transform(m_v3Direction, DirectX::XMMatrixRotationY(+0.01f)));
         m_fAngle += 0.01f;
     }

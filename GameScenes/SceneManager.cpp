@@ -39,8 +39,6 @@ void SceneManager::StartScene() {
         ) {
             tTimer.Update();
             m_pCurrentScene->OnUpdate();
-
-            // m_pCurrentScene->Render();
             iInputManager.Update();
             dD3DManager.Update();
         }

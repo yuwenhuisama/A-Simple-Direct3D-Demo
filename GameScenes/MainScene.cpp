@@ -12,6 +12,8 @@
 #include "DxUtils/Shaders/CommonVertexShader.h"
 #include "DxUtils/Shaders/CommonPixelShader.h"
 
+#include "DxUtils/InputManager.h"
+
 #include "GameObjects/Camera.h"
 
 void MainScene::OnReady() {
@@ -42,8 +44,11 @@ void MainScene::OnReady() {
 
     auto pCarController = std::make_shared<CarController>(pCar);
     m_pCarController = pCarController;
+    
     // ----------
+    Camera::Instance().BindTo(pCar);
 
+    // ----------
     auto pPixelShader = std::make_shared<CommonPixelShader>();
     pPixelShader->Initialize();
 
@@ -55,7 +60,12 @@ void MainScene::OnReady() {
 }
 
 void MainScene::OnUpdate() {
-    m_pCarController->Update();
+
+    if (InputManager::Instance().IsKeyTrigger(DIK_R)) {
+        Camera::Instance().SwitchMode();
+    }
+
+    m_pCarController->Update();    
     Camera::Instance().Update();
 }
 

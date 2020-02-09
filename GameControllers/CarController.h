@@ -19,6 +19,8 @@ public:
     ~CarController() = default;
 
     void Update();
+
+    DirectX::XMVECTOR GetDirection() const { return m_v3Direction; }
 };
 
 #endif // !_H_CARCONTROLLRE_

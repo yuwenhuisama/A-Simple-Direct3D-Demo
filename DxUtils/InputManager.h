@@ -12,7 +12,9 @@ private:
     IDirectInputDevice8* m_pKeyBoardInputDevice = nullptr;
     IDirectInputDevice8* m_pMouseInputDevice = nullptr;
 
+    char m_arrKeyBackBoardBuffer[256];
     char m_arrKeyBoardBuffer[256];
+
     DIMOUSESTATE m_stMouseBuffer;
 
 private:
@@ -28,6 +30,12 @@ public:
     bool IsKeyDown(BYTE dwKeyCode) const;
     bool IsMouseLeftButtonDown() const;
     bool IsMouseRightButtonDown() const;
+
+    bool IsKeyTrigger(BYTE dwKeyCode) const;
+
+    long GetMouseDX() const { return m_stMouseBuffer.lX; }
+    long GetMouseDY() const { return m_stMouseBuffer.lY; }
+    long GetMouseDZ() const { return m_stMouseBuffer.lZ; }
 
 };
 

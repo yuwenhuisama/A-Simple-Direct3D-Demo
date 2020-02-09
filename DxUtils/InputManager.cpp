@@ -71,14 +71,16 @@ failed_exit:
 void InputManager::Update() {
     HRESULT result;
 
+    memcpy(m_arrKeyBackBoardBuffer, m_arrKeyBoardBuffer, sizeof(m_arrKeyBackBoardBuffer));
+
     result = m_pKeyBoardInputDevice->Acquire();
     if (result != DIERR_INPUTLOST) {
         result = m_pKeyBoardInputDevice->GetDeviceState(sizeof(m_arrKeyBoardBuffer), reinterpret_cast<void*>(&m_arrKeyBoardBuffer));
     }
 
-    result = m_pKeyBoardInputDevice->Acquire();
+    result =  m_pMouseInputDevice->Acquire();
     if (result != DIERR_INPUTLOST) {
-        result = m_pKeyBoardInputDevice->GetDeviceState(sizeof(m_stMouseBuffer), reinterpret_cast<void*>(&m_stMouseBuffer));
+        result = m_pMouseInputDevice->GetDeviceState(sizeof(m_stMouseBuffer), reinterpret_cast<void*>(&m_stMouseBuffer));
     }
 }
 
@@ -87,14 +89,18 @@ bool InputManager::IsKeyDown(BYTE dwKeyCode) const {
     return DIKEYDOWN(m_arrKeyBoardBuffer, dwKeyCode);
 }
 
-bool InputManager::IsMouseLeftButtonDown() const {
+bool InputManager::IsKeyTrigger(BYTE dwKeyCode) const {
+    return !DIKEYDOWN(m_arrKeyBackBoardBuffer, dwKeyCode)
+        && DIKEYDOWN(m_arrKeyBoardBuffer, dwKeyCode);
+}
 
-    return false;
+bool InputManager::IsMouseLeftButtonDown() const {
+    return DIKEYDOWN(m_stMouseBuffer.rgbButtons, 0);
 }
 
 bool InputManager::IsMouseRightButtonDown() const {
 
-    return false;
+    return DIKEYDOWN(m_stMouseBuffer.rgbButtons, 1);
 }
 
 InputManager::~InputManager() {
