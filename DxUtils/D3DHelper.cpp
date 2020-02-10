@@ -1,4 +1,5 @@
 #include "D3DHelper.hpp"
+#include <random>
 
 namespace D3DHelper {
     DirectX::XMMATRIX CalcWorldMatrix(const DirectX::XMFLOAT3& v3Translation, const  DirectX::XMFLOAT3& v3Rotation, const  DirectX::XMFLOAT3& v3Scale) {
@@ -35,5 +36,29 @@ namespace D3DHelper {
         result.append(buffer);  
         delete[] buffer;  
         return result; 
+    }
+
+    bool RandomBool() {
+        static std::random_device rd; // obtain a random number from hardware
+	    static std::mt19937 eng(rd()); // seed the generator
+	    static std::uniform_real_distribution<> distr(0, 1); // define the range
+
+		return distr(eng) > 0.7f ? true : false;
+    }
+
+    float RandomFloatInRange(float fFrom, float fTo) {
+        static std::random_device rd; // obtain a random number from hardware
+	    static std::mt19937 eng(rd()); // seed the generator
+	    std::uniform_real_distribution<> distr(fFrom, fTo); // define the range
+
+        return distr(eng);
+    }
+
+    int RandomIntegerInRange(int nFrom, int nTo) {
+        static std::random_device rd; // obtain a random number from hardware
+	    static std::mt19937 eng(rd()); // seed the generator
+	    std::uniform_int_distribution<> distr(nFrom, nTo); // define the range
+
+        return distr(eng);
     }
 }

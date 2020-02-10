@@ -55,20 +55,43 @@ void JsonModel::_ProcessJsonValue(rapidjson::Value::Object& dcRoot) {
             auto fTopRadius = dcRoot.FindMember("top_radius")->value.GetFloat();
             auto fBottomRadius = dcRoot.FindMember("bottom_radius")->value.GetFloat();
             auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
+            auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
+            auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+
             auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
             auto iiList = this->_GetInstancedInfo(dcRoot);
 
-            auto pInnterCylindre = std::make_shared<Cylinder>(fTopRadius, fBottomRadius, fHeight, 100, 100);
-            pInnterCylindre->Initialize();
+            auto pInnerCylindre = std::make_shared<Cylinder>(fTopRadius, fBottomRadius, fHeight, uSliceCount, uStackCount);
+            pInnerCylindre->Initialize();
 
             auto pTexture = std::make_shared<Texture>();
             pTexture->Load(strTexture);
-            pInnterCylindre->SetTexture(pTexture);
+            pInnerCylindre->SetTexture(pTexture);
 
-            auto pCylinder = std::make_shared<InstancedGameObject>(pInnterCylindre);
+            auto pCylinder = std::make_shared<InstancedGameObject>(pInnerCylindre);
             pCylinder->GetAssignedInstancedInfo() = iiList;
 
             this->AddChild(pCylinder);
+        } else if (strType == "sphare") {
+            auto fRadius = dcRoot.FindMember("radius")->value.GetFloat();
+            auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
+            auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+
+            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
+            auto iiList = this->_GetInstancedInfo(dcRoot);
+
+            auto pInnerSphare = std::make_shared<Sphare>(fRadius, uStackCount, uSliceCount);
+            pInnerSphare->Initialize();
+
+            auto pTexture = std::make_shared<Texture>();
+            pTexture->Load(strTexture);
+            pInnerSphare->SetTexture(pTexture);
+
+            auto pShpare = std::make_shared<InstancedGameObject>(pInnerSphare);
+            pShpare->GetAssignedInstancedInfo() = iiList;
+
+            this->AddChild(pShpare);
+
         } else if (strType == "cuboid") {
             auto fWidth = dcRoot.FindMember("width")->value.GetFloat();
             auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
@@ -104,7 +127,7 @@ void JsonModel::_ProcessJsonValue(rapidjson::Value::Array& dcRoot) {
 bool JsonModel::Initialize() {
     const auto& strFilePath = this->GetJsonFilePath();
 
-    std::ifstream ifsFile("SimpleModels/car.json", std::ifstream::binary);
+    std::ifstream ifsFile(strFilePath, std::ifstream::binary);
 
     if (!ifsFile) {
         ifsFile.close();

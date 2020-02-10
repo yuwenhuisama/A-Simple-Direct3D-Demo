@@ -23,6 +23,8 @@
             "top_radius": 0.3,
             "bottom_radius": 0.3,
             "height": 0.3,
+            "stack_count" : 100,
+            "slice_count" : 100,
             "texture" : "Textures/likailikai.jpg",
             "render_info" : [
                 {

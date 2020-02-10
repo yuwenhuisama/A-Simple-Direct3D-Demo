@@ -1,0 +1,21 @@
+{
+    "tag" : "ground",
+    "type" : "conbinant",
+    "children" : [
+        {
+            "tag" : "main",
+            "type" : "cuboid",
+            "width" : 1.0,
+            "height" : 0.5,
+            "depth" : 1.0,
+            "texture" : "Textures/shoushenguolai.jpg",
+            "render_info" : [
+                {
+                    "position": [0.0, 0.0, 0.0],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [300.0, 1.0, 300.0]
+                }
+            ]
+        }
+    ]
+}

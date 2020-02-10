@@ -28,9 +28,7 @@ struct FirstPersonCameraInfo {
 class GameObject;
 class Camera {
 private:
-    CameraMode m_eMode = CameraMode::FirstPerson;
-
-    // DirectX::XMFLOAT3 m_v3ObjDirecton = { 0.0f, 0.0f, 1.0f };
+    CameraMode m_eMode = CameraMode::ThirdPerson;
     std::shared_ptr<GameObject> m_pBoundGameObject = nullptr;
 
     ThirdPersonCameraInfo m_tiThirdPersonInfo;

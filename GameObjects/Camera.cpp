@@ -26,7 +26,6 @@ void Camera::Update() {
             const auto fDy = InputManager::Instance().GetMouseDY();
 
             // TODO: move magic number to configure
-
             fTheta += fDy * 0.005f;
             fPhi -= fDx * 0.005f;
 
