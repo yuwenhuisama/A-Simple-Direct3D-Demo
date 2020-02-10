@@ -1,15 +1,15 @@
-#ifndef _H_COMMONVERTEXSHADER_
-#define _H_COMMONVERTEXSHADER_
+#ifndef _H_SKYBOXVERTEXSHADER_
+#define _H_SKYBOXVERTEXSHADER_
 
 #include "VertexShaderBase.h"
 
-class CommonVertexShader : public VertexShaderBase {
+class SkyBoxVertexShader : public VertexShaderBase {
 private:
     ID3D11Buffer* m_pWVPBuffer = nullptr;
 
 public:
-    CommonVertexShader();
-    virtual ~CommonVertexShader();
+    SkyBoxVertexShader();
+    virtual ~SkyBoxVertexShader();
 
     virtual std::wstring GetShaderFile() override;
     virtual std::string GetShaderEntryName() override;
@@ -23,4 +23,4 @@ public:
     void UpdateWVPMatrix(const DirectX::XMMATRIX& mtMatrix);
 };
 
-#endif // !_H_COMMONVERTEXSHADER_
+#endif // !_H_SKYBOXVERTEXSHADER_

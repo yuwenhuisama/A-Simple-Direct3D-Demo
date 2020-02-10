@@ -30,6 +30,7 @@ private:
     void _SetInstancedInfo(RenderCommand& rcCommand);
     void _SetBaseModelRenderInfo(RenderCommand& rcCommand);
     void _SetTexture(RenderCommand& rcCommand);
+    void _RenderSkyBox(RenderCommand& rcCommand);
 
 public:
     void Initialize();

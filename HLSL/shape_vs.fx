@@ -1,10 +1,8 @@
-cbuffer cbPerObject: register(b0)
-{
+cbuffer cbPerObject: register(b0) {
 	float4x4 gWorldViewProj; 
 };
 
-struct VertexIn
-{
+struct VertexIn {
 	float3 Pos    	: POSITION;
 	float3 Normal 	: Normal;
 	float3 Tangent  : TANGENT;
@@ -12,8 +10,7 @@ struct VertexIn
 	
 };
 
-struct VertexOut
-{
+struct VertexOut {
 	float4 PosH  : SV_POSITION;
     float2 Tex : TEXCOORD0;
 };

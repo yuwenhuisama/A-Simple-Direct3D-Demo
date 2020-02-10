@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+constexpr DirectX::XMFLOAT4 c_f4Region = { -145.0f, -145.0f, 145.0f, 145.0f };
+
 CarController::CarController(std::shared_ptr<Car> pCar) : m_pCar(pCar) {}
 
 void CarController::Update() {
@@ -48,6 +50,21 @@ void CarController::Update() {
     }
 
     m_v3Position = DirectX::XMVectorAdd(m_v3Position, DirectX::XMVectorScale(m_v3Direction, m_fSpeed));
+
+    auto fPosX = DirectX::XMVectorGetX(m_v3Position);
+    auto fPosZ = DirectX::XMVectorGetZ(m_v3Position);
+
+    if (fPosX <= c_f4Region.x) {
+        m_v3Position = DirectX::XMVectorSetX(m_v3Position, c_f4Region.z);
+    } else if (fPosX >= c_f4Region.z) {
+        m_v3Position = DirectX::XMVectorSetX(m_v3Position, c_f4Region.x);
+    }
+
+    if (fPosZ <= c_f4Region.y) {
+        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, c_f4Region.w);
+    } else if (fPosZ >= c_f4Region.w) {
+        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, c_f4Region.y);
+    }
 
     auto pCarLocked = m_pCar.lock();
     if (pCarLocked) {

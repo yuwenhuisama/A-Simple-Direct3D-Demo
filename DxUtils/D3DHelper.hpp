@@ -1,6 +1,7 @@
 #ifndef _H_D3DHELPER_
 #define _H_D3DHELPER_
 
+#include <d3d11.h>
 #include <DirectXMath.h>
 #include <functional>
 
@@ -25,6 +26,14 @@ namespace D3DHelper {
     bool RandomBool();
     float RandomFloatInRange(float fFrom, float fTo);
     int RandomIntegerInRange(int nFrom, int nTo);
+
+    HRESULT CreateWICTexture2DCubeFromFile(
+        ID3D11Device* d3dDevice,
+        ID3D11DeviceContext* d3dDeviceContext,
+        std::wstring_view cubeMapFileName,
+        ID3D11Texture2D** textureArray,
+        ID3D11ShaderResourceView** textureCubeView,
+        bool generateMips);
 };
 
 struct InstancedInfo {

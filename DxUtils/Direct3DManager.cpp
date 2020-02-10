@@ -426,6 +426,101 @@ bool Direct3DManager::DrawObjectWithShader(
     return true;
 }
 
+void Direct3DManager::_SetFrontCounterClockwise(bool bState) {
+    ID3D11RasterizerState* pState = nullptr;
+    m_pDeviceContext->RSGetState(&pState);
+
+    ID3D11RasterizerState* pNewState = nullptr;
+    if (pState) {
+        D3D11_RASTERIZER_DESC rDesc;
+        pState->GetDesc(&rDesc);
+
+        D3DHelper::SafeRelease(pState);
+
+        rDesc.FrontCounterClockwise = bState;
+
+        const auto result = m_pDevice->CreateRasterizerState(&rDesc, &pNewState);
+        if (FAILED(result)) {
+            return;
+        }
+    } else {
+        CD3D11_RASTERIZER_DESC rDesc =  CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT());
+
+        rDesc.FrontCounterClockwise = bState;
+
+        const auto result = m_pDevice->CreateRasterizerState(&rDesc, &pNewState);
+        if (FAILED(result)) {
+            return;
+        }
+    }
+
+    m_pDeviceContext->RSSetState(pNewState);
+    D3DHelper::SafeRelease(pNewState);
+}
+
+void Direct3DManager::_SetStencilStateCmpFunc(D3D11_COMPARISON_FUNC eCmpFunc) {
+    ID3D11DepthStencilState* pState = nullptr;
+    UINT nRef = 0;
+
+    m_pDeviceContext->OMGetDepthStencilState(&pState, &nRef);
+
+    ID3D11DepthStencilState* pNewState = nullptr;
+    if (pState) {
+        D3D11_DEPTH_STENCIL_DESC ddDesc;
+        pState->GetDesc(&ddDesc);
+
+        D3DHelper::SafeRelease(pState);
+
+        ddDesc.DepthFunc = eCmpFunc;
+
+        const auto result = m_pDevice->CreateDepthStencilState(&ddDesc, &pNewState);
+        if(FAILED(result)) {
+            return;
+        }
+    } else {
+        CD3D11_DEPTH_STENCIL_DESC ddDesc = CD3D11_DEPTH_STENCIL_DESC(CD3D11_DEFAULT());
+        ddDesc.DepthFunc = eCmpFunc;
+
+        const auto result = m_pDevice->CreateDepthStencilState(&ddDesc, &pNewState);
+        if(FAILED(result)) {
+            return;
+        }
+    }
+
+    m_pDeviceContext->OMSetDepthStencilState(pNewState, nRef);
+
+    D3DHelper::SafeRelease(pNewState);
+}
+
+bool Direct3DManager::DrawSkyBoxWithShader(
+    ID3D11Buffer* pVertexBuffer,
+    ID3D11Buffer* pIndexedBuffer,
+    UINT nStride,
+    UINT nIndexCount,
+    std::shared_ptr<VertexShaderBase> pVertexShader,
+    std::shared_ptr<PixelShaderBase> pPixelShader
+) {
+    this->_SetFrontCounterClockwise(true);
+    this->_SetStencilStateCmpFunc(D3D11_COMPARISON_LESS_EQUAL);
+
+    m_pDeviceContext->VSSetShader(pVertexShader->GetVertexShader(), nullptr, 0);
+    m_pDeviceContext->PSSetShader(pPixelShader->GetPixelShader(), nullptr, 0);
+
+    UINT nOffset = 0;
+    m_pDeviceContext->IASetInputLayout(m_pVertexShader->GetInputLayout());
+    m_pDeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &nStride, &nOffset);
+    m_pDeviceContext->IASetIndexBuffer(pIndexedBuffer, DXGI_FORMAT_R32_UINT, 0);
+    m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+    m_pDeviceContext->DrawIndexed(nIndexCount, 0, 0);
+
+    this->_SetFrontCounterClockwise(false);
+    this->_SetStencilStateCmpFunc(D3D11_COMPARISON_LESS);
+
+    return true;
+}
+
+
 bool Direct3DManager::CreatePixelShader(ID3DBlob* pBlob, ID3D11PixelShader*& pPixelShader) {
     auto result = m_pDevice->CreatePixelShader(
         pBlob->GetBufferPointer(), 
@@ -452,11 +547,20 @@ bool Direct3DManager::CreateVertexShader(ID3DBlob* pBlob, ID3D11VertexShader*& p
     return true;
 }
 
-bool Direct3DManager::CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Resource*& pTexture) {
+bool Direct3DManager::CreateCubeTexture(std::wstring_view wstrvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Texture2D*& pTexture) {
+    const auto result = D3DHelper::CreateWICTexture2DCubeFromFile(m_pDevice, m_pDeviceContext, wstrvFilePath, &pTexture, &pResourceView, true);
+    if (FAILED(result)) {
+        return false;
+    }
+    return true;
+}
+
+bool Direct3DManager::CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Texture2D*& pTexture) {
+    auto pResource = static_cast<ID3D11Resource*>(pTexture);
     const auto result = DirectX::CreateWICTextureFromFile(
         m_pDevice,
         strvFilePath.data(),
-        &pTexture,
+        &pResource,
         &pResourceView
     );
 

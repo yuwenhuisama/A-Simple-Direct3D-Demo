@@ -76,6 +76,30 @@ void RenderCommandQueueManager::_SetTexture(RenderCommand& rcCommand) {
     Direct3DManager::Instance().ApplyTexture(pTexture);
 }
 
+using RenderSkyBoxInfo = std::tuple<ID3D11Buffer*, ID3D11Buffer*, unsigned long long, size_t,
+                                    std::shared_ptr<VertexShaderBase>,
+                                    std::shared_ptr<PixelShaderBase>,
+                                    std::function<DirectX::XMMATRIX(void)>>;
+void RenderCommandQueueManager::_RenderSkyBox(RenderCommand& rcCommand) {
+    auto [pVertexBuffer, pIndexedBuffer, uStride,
+          uIndicesCount, pVertexShader, pPixelShader, fCallBack]
+        = std::any_cast<RenderSkyBoxInfo>(rcCommand.m_objRenderInfo);
+
+    pVertexShader->Apply({
+        RenderCommand { RenderCommandType::SetWorldMatrix, fCallBack }
+    });
+
+    auto& d3dInstance = Direct3DManager::Instance();
+    d3dInstance.DrawSkyBoxWithShader(
+        pVertexBuffer,
+        pIndexedBuffer,
+        uStride,
+        uIndicesCount,
+        pVertexShader,
+        pPixelShader
+    );
+}
+
 void RenderCommandQueueManager::Render() {
     if (!m_lsQueue.empty()) {
         auto iter = m_lsQueue.begin();
@@ -103,6 +127,9 @@ void RenderCommandQueueManager::Render() {
                     break;
                 case RenderCommandType::SetTexture:
                     this->_SetTexture(*iter);
+                    break;
+                case RenderCommandType::RenderSkyBox:
+                    this->_RenderSkyBox(*iter);
                     break;
                 default:
                     break;

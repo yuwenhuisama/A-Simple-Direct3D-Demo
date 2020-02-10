@@ -11,4 +11,8 @@ struct Vertex {
     // DirectX::XMFLOAT4 m_fColor;
 };
 
+struct SkyBoxVertex {
+    DirectX::XMFLOAT3 m_f3Pos;
+};
+
 #endif // !_H_VERTEX_

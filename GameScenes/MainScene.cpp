@@ -7,9 +7,15 @@
 #include "DxUtils/Shaders/CommonVertexShader.h"
 #include "DxUtils/Shaders/CommonPixelShader.h"
 
+#include "DxUtils/Shaders/SkyBoxVertexShader.h"
+#include "DxUtils/Shaders/SkyBoxPixelShader.h"
+
 #include "DxUtils/InputManager.h"
 
 #include "GameObjects/Camera.h"
+#include "GameObjects/SkyBox.h"
+
+#include "DxUtils/Texture.h"
 
 void MainScene::OnReady() {
     auto pCar = std::make_shared<Car>();
@@ -29,6 +35,17 @@ void MainScene::OnReady() {
     this->AddChild(pGround);
 
     // ----------
+    auto pCubeTexture = std::make_shared<Texture>();
+    // TODO: move hard code to configure
+    pCubeTexture->LoadCube(L"Textures/skybox.jpg");
+
+    auto pSkyBox = std::make_shared<SkyBox>();
+    pSkyBox->Initialize();
+    pSkyBox->SetCubeTexture(pCubeTexture);
+    pSkyBox->BindTo(pCar);
+    this->SetSkyBox(pSkyBox);
+
+    // ----------
     auto pPixelShader = std::make_shared<CommonPixelShader>();
     pPixelShader->Initialize();
 
@@ -37,6 +54,16 @@ void MainScene::OnReady() {
 
     Direct3DManager::Instance().SetPixelShader(pPixelShader);
     Direct3DManager::Instance().SetVertexShader(pVertexShader);
+
+    // ----------
+    auto pSkyBoxPixelShader = std::make_shared<SkyBoxPixelShader>();
+    pSkyBoxPixelShader->Initialize();
+
+    auto pSkyBoxVertexShader = std::make_shared<SkyBoxVertexShader>();
+    pSkyBoxVertexShader->Initialize();
+    
+    pSkyBox->SetPixelShader(pSkyBoxPixelShader);
+    pSkyBox->SetVertexShader(pSkyBoxVertexShader);
 }
 
 void MainScene::OnUpdate() {

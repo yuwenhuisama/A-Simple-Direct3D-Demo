@@ -61,6 +61,9 @@ private:
 
     static LRESULT _WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     
+    void _SetFrontCounterClockwise(bool bState);
+    void _SetStencilStateCmpFunc(D3D11_COMPARISON_FUNC eCmpFunc);
+
 public:
     static Direct3DManager& Instance();
 
@@ -102,14 +105,23 @@ public:
     bool CreatePixelShader(ID3DBlob* pBlob, ID3D11PixelShader*& pPixelShader);
     bool CreateVertexShader(ID3DBlob* pBlob, ID3D11VertexShader*& pVertexShader);
 
-    bool DrawObjectWithEffect(ID3D11Buffer* pVertexBuffer, ID3D11Buffer* pIndexedBuffer, UINT nStride, UINT nIndexCount);
     bool DrawObjectWithShader(
         ID3D11Buffer* pVertexBuffer,
         ID3D11Buffer* pIndexedBuffer,
         UINT nStride,
         UINT nIndexCount);
 
-    bool CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Resource*& pTexture);
+    bool DrawSkyBoxWithShader(
+        ID3D11Buffer* pVertexBuffer,
+        ID3D11Buffer* pIndexedBuffer,
+        UINT nStride,
+        UINT nIndexCount,
+        std::shared_ptr<VertexShaderBase> pVertexShader,
+        std::shared_ptr<PixelShaderBase> pPixelShader
+    );
+
+    bool CreateTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Texture2D*& pTexture);
+    bool CreateCubeTexture(std::wstring_view strvFilePath, ID3D11ShaderResourceView*& pResourceView, ID3D11Texture2D*& pTexture);
 
     void ApplyTexture(std::shared_ptr<Texture> pTexture);
 

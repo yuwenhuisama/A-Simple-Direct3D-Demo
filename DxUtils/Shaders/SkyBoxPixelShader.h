@@ -1,12 +1,12 @@
-#ifndef _H_COMMONPIXELSHADER_
-#define _H_COMMONPIXELSHADER_
+#ifndef _H_SKYBOXPIXELSHADER_
+#define _H_SKYBOXPIXELSHADER_
 
 #include "PixelShaderBase.h"
 
-class CommonPixelShader : public PixelShaderBase {
+class SkyBoxPixelShader : public PixelShaderBase{
 public:
-    CommonPixelShader();
-    virtual ~CommonPixelShader();
+    SkyBoxPixelShader();
+    ~SkyBoxPixelShader();
 
     virtual std::wstring GetShaderFile() override;
     virtual std::string GetShaderEntryName() override;
@@ -16,4 +16,4 @@ public:
     virtual void Apply(const RenderCommand& rcCommand) override;
 };
 
-#endif // !_H_COMMONPIXELSHADER_
+#endif // !_H_SKYBOXPIXELSHADER_

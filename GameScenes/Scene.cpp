@@ -1,7 +1,14 @@
 #include "Scene.h"
 #include "../DxUtils/Direct3DManager.h"
 
+#include "GameObjects/GameObject.h"
+#include "GameObjects/SkyBox.h"
+
 void Scene::Render() {
+    if (m_pSkyBox) {
+        m_pSkyBox->Render();
+    }
+
     for (auto& obj : m_lsGameObjects) {
         obj->Render();
     }

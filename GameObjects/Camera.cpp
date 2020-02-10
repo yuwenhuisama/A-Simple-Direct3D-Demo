@@ -84,11 +84,15 @@ void Camera::SwitchMode() {
 
 
 DirectX::XMMATRIX Camera::GetViewMatrix() const{
-    if (m_eMode == CameraMode::ThirdPerson) {
-        auto v3ObjPos = m_pBoundGameObject->Position();
-        auto vObjPos = DirectX::XMLoadFloat3(&v3ObjPos);
-        return DirectX::XMMatrixLookAtLH(m_tiThirdPersonInfo.m_v32EyePos, vObjPos, m_tiThirdPersonInfo.m_v32Up);
+    if (m_pBoundGameObject) {
+        if (m_eMode == CameraMode::ThirdPerson) {
+            auto v3ObjPos = m_pBoundGameObject->Position();
+            auto vObjPos = DirectX::XMLoadFloat3(&v3ObjPos);
+            return DirectX::XMMatrixLookAtLH(m_tiThirdPersonInfo.m_v32EyePos, vObjPos, m_tiThirdPersonInfo.m_v32Up);
+        } else {
+            return DirectX::XMMatrixLookToLH(m_fiFirstPersonInfo.m_v32EyePos, m_fiFirstPersonInfo.m_v32Direction, m_fiFirstPersonInfo.m_v32Up);
+        }
     } else {
-        return DirectX::XMMatrixLookToLH(m_fiFirstPersonInfo.m_v32EyePos, m_fiFirstPersonInfo.m_v32Direction, m_fiFirstPersonInfo.m_v32Up);
+        return DirectX::XMMatrixLookAtLH({ 10.0f, 0.0f, -100.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
     }
 }

@@ -43,7 +43,7 @@ void Cuboid::PreInitialize() {
 
     m_msMesh.GetVertexes().assign(&arrVertecis[0], &arrVertecis[std::size(arrVertecis)]);
 
-    UINT arrIndices[] = {
+    constexpr UINT arrIndices[] = {
         0, 1, 2,
         0, 2, 3,
 
