@@ -8,7 +8,7 @@
             "width" : 1.0,
             "height" : 0.5,
             "depth" : 1.0,
-            "texture" : "Textures/shoushenguolai.jpg",
+            "texture" : "Textures/huaji.jpg",
             "render_info" : [
                 {
                     "position": [0.0, 0.0, 0.0],

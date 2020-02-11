@@ -29,7 +29,7 @@ namespace D3DHelper {
     std::wstring StringToWString(const std::string& str);
     std::string WStringToString(const std::wstring &wstr);
 
-    bool RandomBool();
+    bool RandomBool(float fRate);
     float RandomFloatInRange(float fFrom, float fTo);
     int RandomIntegerInRange(int nFrom, int nTo);
 

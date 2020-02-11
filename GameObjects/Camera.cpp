@@ -93,7 +93,7 @@ void Camera::Update() {
             auto& v3Direction = m_fiFirstPersonInfo.m_v32Direction;
             v3Direction = DirectX::XMVector3Transform(
                 v3Direction, DirectX::XMMatrixRotationAxis(
-                    { 0.0f, DirectX::XMVectorGetY(v3EyePos), 0.0f },
+                    { 0.0f, 1.0f, 0.0f },
                     fDx * cCamearaConfigure.m_fFirstRotationFactorX)
             );
 

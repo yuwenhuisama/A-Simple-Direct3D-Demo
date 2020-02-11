@@ -54,5 +54,21 @@ bool GameConfigure::Initialize(std::string_view strvConfigureFileName) {
     arrVector = this->GetFloatArray(objCamera, "first_eye_pos_adjust");
     m_cCameraConfigure.m_f3FirstEyePosAdjust = { arrVector[0], arrVector[1], arrVector[2] };
 
+    // random ground
+    assert(this->m_dcDocument.HasMember("random_ground"));
+    auto objGround = this->m_dcDocument.FindMember("random_ground")->value.GetObject();
+
+    m_cRandomGroundConfigure.m_vcTextures = this->GetStringArray(objGround, "textures");
+    m_cRandomGroundConfigure.m_uRandomModelTypes = this->GetInt(objGround, "random_model_types");
+    m_cRandomGroundConfigure.m_uGenerateLevelFrom = this->GetInt(objGround, "generate_level_from");
+    m_cRandomGroundConfigure.m_uGenerateLevelTo= this->GetInt(objGround, "generate_level_to");
+    m_cRandomGroundConfigure.m_fGenerateRate = this->GetFloat(objGround, "generate_rate");
+    m_cRandomGroundConfigure.m_fModelMinScaleRate = this->GetFloat(objGround, "model_min_scale_rate");
+    m_cRandomGroundConfigure.m_fModelMaxScaleRate = this->GetFloat(objGround, "model_max_scale_rate");
+    m_cRandomGroundConfigure.m_fMinRegionSize = this->GetFloat(objGround, "min_region_size");
+    
+    auto vcFloats = this->GetFloatArray(objGround, "region");
+    m_cRandomGroundConfigure.m_f4Region = { vcFloats[0], vcFloats[1], vcFloats[2], vcFloats[3] };
+
     return true;
 }

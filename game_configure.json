@@ -1,10 +1,10 @@
 {
     "car": {
-        "max_speed_forward" : 0.5,
-        "min_speed_back": -0.5,
-        "acc_speed_forward" : 0.01,
-        "acc_speed_back" : 0.01,
-        "acc_stop" : 0.005,
+        "max_speed_forward" : 0.2,
+        "min_speed_back": -0.2,
+        "acc_speed_forward" : 0.005,
+        "acc_speed_back" : 0.005,
+        "acc_stop" : 0.001,
         "turn_angle" : 0.005,
         "turn_wheel_angle" : 0.25
     },
@@ -23,8 +23,29 @@
         "default_first_eye_pos" : [0.0, 0.0, -5.0],
         "default_first_eye_up" : [0.0, 1.0, 0.0],
         "default_first_eye_direction" : [0.0, 0.0, 1.0],
-        "first_rotation_factor_x" : 0.001,
-        "first_rotation_factor_y" : 0.001,
+        "first_rotation_factor_x" : 0.005,
+        "first_rotation_factor_y" : 0.005,
         "first_eye_pos_adjust" : [0.0, 1.0, 0.0]
+    },
+
+    "random_ground": {
+        "textures" : [
+            "Textures/buguoruci.jpg",
+            "Textures/chouyou.jpg",
+            "Textures/en.jpg",
+            "Textures/likailikai.jpg",
+            "Textures/shenluehao.jpg",
+            "Textures/wenhao.jpg",
+            "Textures/tuifei.jpg",
+            "Textures/shoushenguolai.jpg"
+        ],
+        "random_model_types" : 20,
+        "generate_level_from" : 4,
+        "generate_level_to" : 7,
+        "generate_rate": 0.6,
+        "model_min_scale_rate": 0.2,
+        "model_max_scale_rate": 10.0,
+        "min_region_size": 5.0,
+        "region": [-150.0, -150.0, 150.0, 150.0]
     }
 }

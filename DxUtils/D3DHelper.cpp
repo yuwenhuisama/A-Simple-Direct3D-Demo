@@ -46,12 +46,12 @@ namespace D3DHelper {
         return result; 
     }
 
-    bool RandomBool() {
+    bool RandomBool(float fRate) {
         static std::random_device rd; // obtain a random number from hardware
 	    static std::mt19937 eng(rd()); // seed the generator
 	    static std::uniform_real_distribution<> distr(0, 1); // define the range
 
-		return distr(eng) > 0.7f ? true : false;
+		return distr(eng) > fRate ? true : false;
     }
 
     float RandomFloatInRange(float fFrom, float fTo) {

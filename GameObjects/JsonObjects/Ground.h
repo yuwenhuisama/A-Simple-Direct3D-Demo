@@ -16,10 +16,10 @@ private:
 private:
     std::shared_ptr<Texture> _RandomTexture();
 
-    void _GenerateSphare(size_t uFrom, size_t uTo);
-    void _GenerateCylinder(size_t uFrom, size_t uTo);
-    void _GenerateCuboid(size_t uFrom, size_t uTo);
-    void _GenerateShape(size_t uFrom, size_t uTo);
+    void _GenerateSphare(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo);
+    void _GenerateCylinder(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo);
+    void _GenerateCuboid(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo);
+    void _GenerateShape(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo);
 
     void _RandomGenerateModels();
     void _DecideGeneratingRegion(const RegionRect& v4Region, size_t uLevel);

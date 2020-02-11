@@ -3,6 +3,8 @@
 
 #include "Configure.h"
 #include <DirectXMath.h>
+#include <string>
+#include <vector>
 
 struct CarConfigure {
     float m_fMaxSpeedForward = 0.0f;
@@ -34,10 +36,23 @@ struct CameraConfigure {
 
 };
 
+struct RandomGroundConfigure {
+    std::vector<std::string> m_vcTextures;
+    size_t m_uRandomModelTypes = 0;  
+    size_t m_uGenerateLevelFrom = 0;
+    size_t m_uGenerateLevelTo = 0;
+    float m_fGenerateRate = 0.0f;
+    float m_fModelMinScaleRate = 0.0f;
+    float m_fModelMaxScaleRate = 0.0f;
+    float m_fMinRegionSize = 0.0f;
+    DirectX::XMFLOAT4 m_f4Region = { 0.0f, 0.0f, 0.0f, 0.0f };
+};
+
 class GameConfigure : public Configure {
 private:
     CarConfigure m_cCarConfigure;
     CameraConfigure m_cCameraConfigure;
+    RandomGroundConfigure m_cRandomGroundConfigure;
 
 private:
     GameConfigure();
@@ -49,6 +64,7 @@ public:
 
     const CarConfigure& GetCarConfigure() const { return m_cCarConfigure; }
     const CameraConfigure& GetCameraConfigure() const { return m_cCameraConfigure; }
+    const RandomGroundConfigure& GetRandomGroundConfigure() const { return m_cRandomGroundConfigure; }
 };
 
 #endif

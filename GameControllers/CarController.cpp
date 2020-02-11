@@ -6,8 +6,6 @@
 
 #include <math.h>
 
-constexpr DirectX::XMFLOAT4 c_f4Region = { -145.0f, -145.0f, 145.0f, 145.0f };
-
 CarController::CarController(std::shared_ptr<Car> pCar) : m_pCar(pCar) {}
 
 void CarController::Update() {
@@ -89,16 +87,24 @@ void CarController::Update() {
     auto fPosX = DirectX::XMVectorGetX(m_v3Position);
     auto fPosZ = DirectX::XMVectorGetZ(m_v3Position);
 
-    if (fPosX <= c_f4Region.x) {
-        m_v3Position = DirectX::XMVectorSetX(m_v3Position, c_f4Region.z);
-    } else if (fPosX >= c_f4Region.z) {
-        m_v3Position = DirectX::XMVectorSetX(m_v3Position, c_f4Region.x);
+    const auto& f4Region = GameConfigure::Instance().GetRandomGroundConfigure().m_f4Region;
+    const DirectX::XMFLOAT4 f4LogicRegion = {
+        f4Region.x + 5.0f,
+        f4Region.y + 5.0f,
+        f4Region.z - 5.0f,
+        f4Region.w - 5.0f,
+    };
+
+    if (fPosX <= f4LogicRegion.x) {
+        m_v3Position = DirectX::XMVectorSetX(m_v3Position, f4LogicRegion.z);
+    } else if (fPosX >= f4LogicRegion.z) {
+        m_v3Position = DirectX::XMVectorSetX(m_v3Position, f4LogicRegion.x);
     }
 
-    if (fPosZ <= c_f4Region.y) {
-        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, c_f4Region.w);
-    } else if (fPosZ >= c_f4Region.w) {
-        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, c_f4Region.y);
+    if (fPosZ <= f4LogicRegion.y) {
+        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, f4LogicRegion.w);
+    } else if (fPosZ >= f4LogicRegion.w) {
+        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, f4LogicRegion.y);
     }
 
     if (pLockedCar) {

@@ -14,6 +14,8 @@
 
 #include "GameObjects/InstancedGameObject.h"
 
+#include "GameUtils/GameConfigure.h"
+
 Ground::Ground() : JsonModel() {}
 
 std::string Ground::GetJsonFilePath() {
@@ -24,21 +26,16 @@ void Ground::Update() {
 
 }
 
-constexpr WCHAR* c_arrTextures[] = {
-    L"Textures/chouyou.jpg",
-    L"Textures/likailikai.jpg",
-    L"Textures/shoushenguolai.jpg"
-};
-
 std::shared_ptr<Texture> Ground::_RandomTexture() {
-    const auto wszTextureName = c_arrTextures[D3DHelper::RandomIntegerInRange(0, static_cast<int>(std::size(c_arrTextures)) - 1)];
+    const auto& vcTextures = GameConfigure::Instance().GetRandomGroundConfigure().m_vcTextures;
+    const auto strTextureName = vcTextures[D3DHelper::RandomIntegerInRange(0, static_cast<int>(std::size(vcTextures)) - 1)];
     const auto pTexture = std::make_shared<Texture>();
-    pTexture->Load(std::wstring(wszTextureName));
+    pTexture->Load(D3DHelper::StringToWString(strTextureName));
 
     return pTexture;
 }
 
-void Ground::_GenerateSphare(size_t uFrom, size_t uTo) {
+void Ground::_GenerateSphare(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo) {
     const auto uStackCount = D3DHelper::RandomIntegerInRange(10, 200);
     const auto uSliceCount = D3DHelper::RandomIntegerInRange(5, 200);
 
@@ -51,9 +48,11 @@ void Ground::_GenerateSphare(size_t uFrom, size_t uTo) {
         pInnerSphare
     );
 
+    const auto& cConfigure = GameConfigure::Instance().GetRandomGroundConfigure();
+
     for (auto i = uFrom; i < uTo; ++i){
         InstancedInfo iInfo;
-        const auto& rtRegion = m_stRegionSet[i];
+        const auto& rtRegion = m_stRegionSet[vcIndices[i]];
 
         DirectX::XMFLOAT2 v2Center {
             rtRegion.left + (rtRegion.right - rtRegion.left) / 2,
@@ -69,9 +68,9 @@ void Ground::_GenerateSphare(size_t uFrom, size_t uTo) {
         const auto fMaxRadius = min(rtRegion.right - rtRegion.left, rtRegion.bottom - rtRegion.top);
 
         DirectX::XMFLOAT3 v3Scale {
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
-            D3DHelper::RandomFloatInRange(0.1f, 5.0f),
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, cConfigure.m_fModelMaxScaleRate),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
         };
 
         // pos
@@ -93,7 +92,7 @@ void Ground::_GenerateSphare(size_t uFrom, size_t uTo) {
     this->AddChild(pShpare);
 }
 
-void Ground::_GenerateCylinder(size_t uFrom, size_t uTo) {
+void Ground::_GenerateCylinder(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo) {
     const auto uStackCount = D3DHelper::RandomIntegerInRange(10, 200);
     const auto uSliceCount = D3DHelper::RandomIntegerInRange(5, 200);
 
@@ -109,9 +108,11 @@ void Ground::_GenerateCylinder(size_t uFrom, size_t uTo) {
         pInnerCylinder
     );
 
+    const auto& cConfigure = GameConfigure::Instance().GetRandomGroundConfigure();
+
     for (auto i = uFrom; i < uTo; ++i){
         InstancedInfo iInfo;
-        const auto& rtRegion = m_stRegionSet[i];
+        const auto& rtRegion = m_stRegionSet[vcIndices[i]];
 
         DirectX::XMFLOAT2 v2Center {
             rtRegion.left + (rtRegion.right - rtRegion.left) / 2,
@@ -127,9 +128,9 @@ void Ground::_GenerateCylinder(size_t uFrom, size_t uTo) {
         const auto fMaxRadius = min(rtRegion.right - rtRegion.left, rtRegion.bottom - rtRegion.top);
 
         DirectX::XMFLOAT3 v3Scale {
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
-            D3DHelper::RandomFloatInRange(0.1f, 5.0f),
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, cConfigure.m_fModelMaxScaleRate),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
         };
 
         // pos
@@ -151,7 +152,7 @@ void Ground::_GenerateCylinder(size_t uFrom, size_t uTo) {
     this->AddChild(pCylinder);
 }
 
-void Ground::_GenerateCuboid(size_t uFrom, size_t uTo) {
+void Ground::_GenerateCuboid(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo) {
     const auto pInnerCuboid = std::make_shared<Cuboid>(1.0f, 1.0f, 1.0f);
     pInnerCuboid->Initialize();
 
@@ -161,9 +162,11 @@ void Ground::_GenerateCuboid(size_t uFrom, size_t uTo) {
         pInnerCuboid
     );
 
+    const auto& cConfigure = GameConfigure::Instance().GetRandomGroundConfigure();
+
     for (auto i = uFrom; i < uTo; ++i){
         InstancedInfo iInfo;
-        const auto& rtRegion = m_stRegionSet[i];
+        const auto& rtRegion = m_stRegionSet[vcIndices[i]];
 
         DirectX::XMFLOAT2 v2Center {
             rtRegion.left + (rtRegion.right - rtRegion.left) / 2,
@@ -179,9 +182,9 @@ void Ground::_GenerateCuboid(size_t uFrom, size_t uTo) {
         const auto fMaxRadius = min(rtRegion.right - rtRegion.left, rtRegion.bottom - rtRegion.top);
 
         DirectX::XMFLOAT3 v3Scale {
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
-            D3DHelper::RandomFloatInRange(0.1f, 5.0f),
-            D3DHelper::RandomFloatInRange(0.1f, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, cConfigure.m_fModelMaxScaleRate),
+            D3DHelper::RandomFloatInRange(cConfigure.m_fModelMinScaleRate, fMaxRadius),
         };
 
         // pos
@@ -203,17 +206,17 @@ void Ground::_GenerateCuboid(size_t uFrom, size_t uTo) {
     this->AddChild(pCuboid);
 }
 
-void Ground::_GenerateShape(size_t uFrom, size_t uTo) {
+void Ground::_GenerateShape(const std::vector<size_t>& vcIndices, size_t uFrom, size_t uTo) {
     auto nType = D3DHelper::RandomIntegerInRange(0, 2);
     switch (nType) {
         case 0:
-            _GenerateSphare(uFrom, uTo);
+            _GenerateSphare(vcIndices, uFrom, uTo);
             break;
         case 1:
-            _GenerateCylinder(uFrom, uTo);
+            _GenerateCylinder(vcIndices, uFrom, uTo);
             break;
         case 2:
-            _GenerateCuboid(uFrom, uTo);
+            _GenerateCuboid(vcIndices, uFrom, uTo);
             break;
         default:
             break;
@@ -222,9 +225,9 @@ void Ground::_GenerateShape(size_t uFrom, size_t uTo) {
 
 void Ground::_RandomGenerateModels() {
     auto uTotalModels = m_stRegionSet.size();
-    const size_t uModelTypes = 12u;
+    const size_t uModelTypes = GameConfigure::Instance().GetRandomGroundConfigure().m_uRandomModelTypes;
 
-    std::vector<UINT> vcIndex(uTotalModels);
+    std::vector<size_t> vcIndex(uTotalModels);
     std::generate(vcIndex.begin(), vcIndex.end(), [n = 0]() mutable { return n++; });
 
     auto seed = static_cast<size_t>(std::chrono::system_clock::now ().time_since_epoch ().count ());
@@ -235,22 +238,24 @@ void Ground::_RandomGenerateModels() {
 
     if (nRemain == 0) {
         for (auto i = 0u; i < uModelTypes; ++i) {
-            _GenerateShape(i * nStep, (i+1) * nStep);
+            _GenerateShape(vcIndex, i * nStep, (i+1) * nStep);
         }
     } else {
         for (auto i = 0u; i < uModelTypes - 1; ++i) {
-            _GenerateShape(i * nStep, (i+1) * nStep);
+            _GenerateShape(vcIndex, i * nStep, (i+1) * nStep);
         }
-        _GenerateShape(uTotalModels - nRemain, uTotalModels);
+        _GenerateShape(vcIndex, uTotalModels - nRemain, uTotalModels);
     }
 }
 
 void Ground::_DecideGeneratingRegion(const RegionRect& v4Region, size_t uLevel) {  
-    if (uLevel >= 6) {
+    const auto fMinRegionSize = GameConfigure::Instance().GetRandomGroundConfigure().m_fMinRegionSize;
+
+    if (uLevel >= GameConfigure::Instance().GetRandomGroundConfigure().m_uGenerateLevelTo) {
         return;
     }
 
-    if (v4Region.right - v4Region.left < 5.0f || v4Region.bottom - v4Region.top < 5.0f) {
+    if (v4Region.right - v4Region.left < fMinRegionSize || v4Region.bottom - v4Region.top < fMinRegionSize) {
         return;
     }
 
@@ -264,10 +269,10 @@ void Ground::_DecideGeneratingRegion(const RegionRect& v4Region, size_t uLevel) 
 
     const std::array<RegionRect, 4> arrRegions { rcLeftTop, rcRightTop, rcLeftBottom, rcRightBottom };
 
-    if (uLevel >= 4) {
+    if (uLevel >= GameConfigure::Instance().GetRandomGroundConfigure().m_uGenerateLevelFrom) {
         for (const auto& region : arrRegions) {
-            if (!(region.right - region.left < 5.0f || region.bottom - region.top < 5.0f)) {
-                if (D3DHelper::RandomBool()) {
+            if (!(region.right - region.left < fMinRegionSize || region.bottom - region.top < fMinRegionSize)) {
+                if (D3DHelper::RandomBool(GameConfigure::Instance().GetRandomGroundConfigure().m_fGenerateRate)) {
                     m_stRegionSet.push_back(region);
                 } else {
                         this->_DecideGeneratingRegion(region, uLevel + 1);
@@ -286,7 +291,8 @@ bool Ground::Initialize() {
 
     m_stRegionSet.clear();
 
-    const RegionRect v4Region = { -150.0f, -150.0f, 150.0f, 150.0f };
+    auto f4Region = GameConfigure::Instance().GetRandomGroundConfigure().m_f4Region;
+    const RegionRect v4Region = { f4Region.x, f4Region.y, f4Region.z, f4Region.w };
 
     this->_DecideGeneratingRegion(v4Region, 0);
     this->_RandomGenerateModels();

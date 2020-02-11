@@ -22,7 +22,7 @@ public:
 
     std::vector<int> GetIntArray(rapidjson::Value::Object vObject, std::string_view strvFieldName);
     std::vector<float> GetFloatArray(rapidjson::Value::Object vObject, std::string_view strvFieldName);
-
+    std::vector<std::string> GetStringArray(rapidjson::Value::Object vObject, std::string_view strvFieldName);
 };
 
 #endif // !_H_CONFIGURE_

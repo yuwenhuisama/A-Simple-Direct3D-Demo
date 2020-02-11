@@ -63,6 +63,25 @@ std::vector<float> Configure::GetFloatArray(rapidjson::Value::Object vObject, st
     return vcResult;
 }
 
+std::vector<std::string> Configure::GetStringArray(rapidjson::Value::Object vObject, std::string_view strvFieldName) {
+    assert(vObject.HasMember(strvFieldName.data()) == true);
+    auto pMember = vObject.FindMember(strvFieldName.data());
+    assert(pMember->value.IsArray() == true);
+
+    auto garrArray = pMember->value.GetArray();
+    auto uSize = garrArray.Size();
+
+    std::vector<std::string> vcResult(uSize);
+    for (auto i = 0u; i < uSize; ++i) {
+        auto& vValue = garrArray[i];
+
+        assert(vValue.IsString() == true);
+        vcResult[i] = vValue.GetString();
+    }
+
+    return vcResult;
+}
+
 bool Configure::Initialize(std::string_view strvConfigureFileName) {
     std::ifstream ifsFile(strvConfigureFileName.data(), std::ifstream::binary);
 
