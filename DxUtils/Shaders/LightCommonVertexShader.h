@@ -2,6 +2,7 @@
 #define _H_LIGHTCOMMONVERTEXSHADER_
 
 #include "VertexShaderBase.h"
+#include "DxUtils/ShaderBuffer.h"
 
 class LightCommonVertexShader : public VertexShaderBase {
 private:
@@ -20,7 +21,7 @@ public:
 
     virtual void Apply(const RenderCommand& rcCommand) override;
 
-    void UpdateWVPMatrix(const DirectX::XMMATRIX& mtMatrix);
+    void UpdateWVPMatrix(const LightCommonVertexShaderBuffer& mtBuffer);
     
 };
 

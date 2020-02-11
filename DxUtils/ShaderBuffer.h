@@ -10,4 +10,11 @@ struct LightCommonPixelShaderBuffer {
     float m_fUnsused1;
 };
 
+struct LightCommonVertexShaderBuffer {
+    DirectX::XMMATRIX m_mtWorld;
+    DirectX::XMMATRIX m_mtWorldNormal;
+    DirectX::XMMATRIX m_mtView;
+    DirectX::XMMATRIX m_mtProj;
+};
+
 #endif // !_SHADERBUFFER_

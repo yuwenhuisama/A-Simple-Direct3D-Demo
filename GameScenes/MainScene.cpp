@@ -4,8 +4,11 @@
 
 #include "DxUtils/Direct3DManager.h"
 
-#include "DxUtils/Shaders/CommonVertexShader.h"
-#include "DxUtils/Shaders/CommonPixelShader.h"
+// #include "DxUtils/Shaders/CommonVertexShader.h"
+// #include "DxUtils/Shaders/CommonPixelShader.h"
+
+#include "DxUtils/Shaders/LightCommonVertexShader.h"
+#include "DxUtils/Shaders/LightCommonPixelShader.h"
 
 #include "DxUtils/Shaders/SkyBoxVertexShader.h"
 #include "DxUtils/Shaders/SkyBoxPixelShader.h"
@@ -16,6 +19,13 @@
 #include "GameObjects/SkyBox.h"
 
 #include "DxUtils/Texture.h"
+
+#include "DxUtils/RenderCommandQueue/RenderCommandQueueManager.h"
+
+#include "DxUtils/Light.h"
+#include "DxUtils/ShaderBuffer.h"
+
+#include "GameUtils/GameConfigure.h"
 
 void MainScene::OnReady() {
     auto pCar = std::make_shared<Car>();
@@ -29,7 +39,7 @@ void MainScene::OnReady() {
     Camera::Instance().Initialize();
     Camera::Instance().BindTo(pCar);
 
-    // ----------
+    //----------
     auto pGround = std::make_shared<Ground>();
     pGround->Initialize();
     pGround->Position().y = -0.5f;
@@ -37,8 +47,11 @@ void MainScene::OnReady() {
 
     // ----------
     auto pCubeTexture = std::make_shared<Texture>();
-    // TODO: move hard code to configure
-    pCubeTexture->LoadCube(L"Textures/skybox.jpg");
+    pCubeTexture->LoadCube(
+        D3DHelper::StringToWString(
+            GameConfigure::Instance().GetSkyBoxConfigure().m_strTexture
+        )
+    );
 
     auto pSkyBox = std::make_shared<SkyBox>();
     pSkyBox->Initialize();
@@ -47,10 +60,21 @@ void MainScene::OnReady() {
     this->SetSkyBox(pSkyBox);
 
     // ----------
-    auto pPixelShader = std::make_shared<CommonPixelShader>();
+    auto pLight = std::make_shared<Light>();
+    pLight->m_f3LightPos = GameConfigure::Instance().GetLightConfigure().m_f3Position;
+    this->SetLight(pLight);
+
+    // ----------
+    // auto pPixelShader = std::make_shared<CommonPixelShader>();
+    // pPixelShader->Initialize();
+
+    // auto pVertexShader = std::make_shared<CommonVertexShader>();
+    // pVertexShader->Initialize();
+
+    auto pPixelShader = std::make_shared<LightCommonPixelShader>();
     pPixelShader->Initialize();
 
-    auto pVertexShader = std::make_shared<CommonVertexShader>();
+    auto pVertexShader = std::make_shared<LightCommonVertexShader>();
     pVertexShader->Initialize();
 
     Direct3DManager::Instance().SetPixelShader(pPixelShader);
@@ -68,7 +92,6 @@ void MainScene::OnReady() {
 }
 
 void MainScene::OnUpdate() {
-
     if (InputManager::Instance().IsKeyTrigger(DIK_R)) {
         Camera::Instance().SwitchMode();
     }
@@ -78,5 +101,25 @@ void MainScene::OnUpdate() {
 }
 
 void MainScene::OnRelease(){
+}
 
+void MainScene::Render() {
+    if (m_pLight) {
+        std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
+            const auto v4EyePose = Camera::Instance().GetEyePos();
+            LightCommonPixelShaderBuffer bfBuffer;
+            bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
+            bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
+
+            return bfBuffer;
+        };
+
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+                RenderCommandType::SetLightInfo,
+                fCallback
+            }
+        );
+    }
+
+    Scene::Render();
 }

@@ -2,45 +2,11 @@
 #include "DxUtils/RenderCommandQueue/RenderCommandQueueManager.h"
 #include "DxUtils/Vertex.h"
 #include "DxUtils/Direct3DManager.h"
+#include "GameUtils/GameConfigure.h"
 
 #include "GameObject.h"
 
 #include <functional>
-
-constexpr float uWidth = 100.0f;
-
-constexpr SkyBoxVertex c_arrVertecies[] = {
-
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
-
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
-
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
-
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
-
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
-
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
-    { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
-};
 
 constexpr UINT c_arrIndices[] = {
     0, 1, 2,
@@ -63,6 +29,40 @@ constexpr UINT c_arrIndices[] = {
 };
 
 bool SkyBox::_InitializeBuffer() {
+    const float uWidth = GameConfigure::Instance().GetSkyBoxConfigure().m_f3Size.x;
+
+    SkyBoxVertex c_arrVertecies[] = {
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
+
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
+
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
+
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, +uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
+
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(-uWidth, -uWidth, +uWidth)},
+
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, -uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, +uWidth, +uWidth)},
+        { DirectX::XMFLOAT3(+uWidth, -uWidth, +uWidth)},
+    };
+
     // --------------- Vertex Buffer ----------------
     D3D11_BUFFER_DESC bdDesc;
     bdDesc.Usage = D3D11_USAGE_IMMUTABLE;

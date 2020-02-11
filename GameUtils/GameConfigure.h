@@ -48,11 +48,22 @@ struct RandomGroundConfigure {
     DirectX::XMFLOAT4 m_f4Region = { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
+struct LightConfigure {
+    DirectX::XMFLOAT3 m_f3Position = { 0.0f, 0.0f, 0.0f };
+};
+
+struct SkyBoxConfigure {
+    DirectX::XMFLOAT3 m_f3Size = { 0.0f, 0.0f, 0.0f };
+    std::string m_strTexture;
+};
+
 class GameConfigure : public Configure {
 private:
     CarConfigure m_cCarConfigure;
     CameraConfigure m_cCameraConfigure;
     RandomGroundConfigure m_cRandomGroundConfigure;
+    LightConfigure m_cLightConfigure;
+    SkyBoxConfigure m_cSkyBoxConfigure;
 
 private:
     GameConfigure();
@@ -65,6 +76,8 @@ public:
     const CarConfigure& GetCarConfigure() const { return m_cCarConfigure; }
     const CameraConfigure& GetCameraConfigure() const { return m_cCameraConfigure; }
     const RandomGroundConfigure& GetRandomGroundConfigure() const { return m_cRandomGroundConfigure; }
+    const LightConfigure& GetLightConfigure() const { return m_cLightConfigure; }
+    const SkyBoxConfigure& GetSkyBoxConfigure() const { return m_cSkyBoxConfigure; }
 };
 
 #endif

@@ -70,5 +70,18 @@ bool GameConfigure::Initialize(std::string_view strvConfigureFileName) {
     auto vcFloats = this->GetFloatArray(objGround, "region");
     m_cRandomGroundConfigure.m_f4Region = { vcFloats[0], vcFloats[1], vcFloats[2], vcFloats[3] };
 
+    // sky box
+    assert(this->m_dcDocument.HasMember("skybox"));
+    auto objSkyBox = this->m_dcDocument.FindMember("skybox")->value.GetObject();
+    m_cSkyBoxConfigure.m_strTexture = this->GetString(objSkyBox, "texture");
+    vcFloats = this->GetFloatArray(objSkyBox, "size");
+    m_cSkyBoxConfigure.m_f3Size = { vcFloats[0], vcFloats[1], vcFloats[2] };
+
+    // light
+    assert(this->m_dcDocument.HasMember("light"));
+    auto objLight = this->m_dcDocument.FindMember("light")->value.GetObject();
+    vcFloats = this->GetFloatArray(objLight, "position");
+    m_cLightConfigure.m_f3Position = { vcFloats[0], vcFloats[1], vcFloats[2] };
+
     return true;
 }

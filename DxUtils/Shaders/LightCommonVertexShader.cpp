@@ -28,7 +28,7 @@ bool LightCommonVertexShader::DefineShaderSubResource() {
     D3D11_BUFFER_DESC dbdMatrix;
     memset(&dbdMatrix, 0, sizeof(D3D11_BUFFER_DESC));
     dbdMatrix.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    dbdMatrix.ByteWidth = sizeof(DirectX::XMMATRIX);
+    dbdMatrix.ByteWidth = sizeof(LightCommonVertexShaderBuffer);
     dbdMatrix.Usage = D3D11_USAGE_DEFAULT;
 
     const auto result = Direct3DManager::Instance().CreateBuffer(dbdMatrix, m_pWVPBuffer);
@@ -56,9 +56,9 @@ UINT LightCommonVertexShader::GetInputLayoutDescArraySize() {
     return static_cast<UINT>(std::size(s_arrDesc));
 }
 
-void LightCommonVertexShader::UpdateWVPMatrix(const DirectX::XMMATRIX& mtMatrix) {
+void LightCommonVertexShader::UpdateWVPMatrix(const LightCommonVertexShaderBuffer& mtBuffer) {
     const auto pDeviceContext = Direct3DManager::Instance().GetDeviceContext();
-    pDeviceContext->UpdateSubresource(m_pWVPBuffer, 0, nullptr, &mtMatrix, 0, 0);
+    pDeviceContext->UpdateSubresource(m_pWVPBuffer, 0, nullptr, &mtBuffer, 0, 0);
     pDeviceContext->VSSetConstantBuffers(0, 1, &m_pWVPBuffer);
 }
 
@@ -70,8 +70,13 @@ void LightCommonVertexShader::Apply(const RenderCommand& rcCommand) {
         const auto& mtProjMatrix = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4, Direct3DManager::Instance().GetWindowAspect(), 1.0f, 1000.0f);
         const auto& mtViewMatrix = Camera::Instance().GetViewMatrix();
 
-        auto mtWorldViewProjMatrix = mtWorldMatrix * mtViewMatrix * mtProjMatrix;
+        // auto mtWorldViewProjMatrix = mtWorldMatrix * mtViewMatrix * mtProjMatrix;
+        LightCommonVertexShaderBuffer bfBuffer;
+        bfBuffer.m_mtWorld = DirectX::XMMatrixTranspose(mtWorldMatrix);
+        bfBuffer.m_mtView = DirectX::XMMatrixTranspose(mtViewMatrix);
+        bfBuffer.m_mtProj = DirectX::XMMatrixTranspose(mtProjMatrix);
+        bfBuffer.m_mtWorldNormal = DirectX::XMMatrixInverse(nullptr, mtWorldMatrix); // transpose(transpose(inverse))
 
-        this->UpdateWVPMatrix(DirectX::XMMatrixTranspose(mtWorldViewProjMatrix));
+        this->UpdateWVPMatrix(bfBuffer);
     }
 }

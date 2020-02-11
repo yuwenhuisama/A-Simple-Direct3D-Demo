@@ -46,6 +46,14 @@ public:
 
     void BindTo(std::shared_ptr<GameObject> pObject) { m_pBoundGameObject = pObject; }
 
+    DirectX::XMVECTOR GetEyePos() const { 
+        if (m_eMode == CameraMode::ThirdPerson) {
+            return m_tiThirdPersonInfo.m_v32EyePos;
+        } else {
+            return m_fiFirstPersonInfo.m_v32EyePos;
+        }
+    }
+
     DirectX::XMMATRIX GetViewMatrix() const;
 
 };

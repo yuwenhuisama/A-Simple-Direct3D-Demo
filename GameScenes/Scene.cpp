@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include "../DxUtils/Direct3DManager.h"
+#include "DxUtils/Direct3DManager.h"
 
 #include "GameObjects/GameObject.h"
 #include "GameObjects/SkyBox.h"

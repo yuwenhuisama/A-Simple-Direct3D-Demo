@@ -12,7 +12,7 @@ LightCommonPixelShader::~LightCommonPixelShader() {
 }
 
 std::wstring LightCommonPixelShader::GetShaderFile() {
-    return L"HLSL/shape_ps.fx";
+    return L"HLSL/light_shape_ps.fx";
 }
 
 std::string LightCommonPixelShader::GetShaderEntryName() {
@@ -42,7 +42,7 @@ bool LightCommonPixelShader::DefineShaderSubResource() {
 void LightCommonPixelShader::UpdateLightInfo(const LightCommonPixelShaderBuffer& bfLightInfo) {
     const auto pDeviceContext = Direct3DManager::Instance().GetDeviceContext();
     pDeviceContext->UpdateSubresource(m_pLightInfo, 0, nullptr, &bfLightInfo, 0, 0);
-    pDeviceContext->VSSetConstantBuffers(0, 1, &m_pLightInfo);
+    pDeviceContext->PSSetConstantBuffers(0, 1, &m_pLightInfo);
 }
 
 void LightCommonPixelShader::Apply(const RenderCommand& rcCommand) {
