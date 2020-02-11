@@ -50,7 +50,7 @@ bool GameConfigure::Initialize(std::string_view strvConfigureFileName) {
     arrVector = this->GetFloatArray(objCamera, "default_first_eye_direction");
     m_cCameraConfigure.m_f3DefaultFirstEyeDirection = { arrVector[0], arrVector[1], arrVector[2] };
     m_cCameraConfigure.m_fFirstRotationFactorX = this->GetFloat(objCamera, "first_rotation_factor_x");
-    m_cCameraConfigure.m_fFirstRotationFactorX = this->GetFloat(objCamera, "first_rotation_factor_y");
+    m_cCameraConfigure.m_fFirstRotationFactorY = this->GetFloat(objCamera, "first_rotation_factor_y");
     arrVector = this->GetFloatArray(objCamera, "first_eye_pos_adjust");
     m_cCameraConfigure.m_f3FirstEyePosAdjust = { arrVector[0], arrVector[1], arrVector[2] };
 

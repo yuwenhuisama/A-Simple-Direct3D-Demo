@@ -84,19 +84,24 @@ void Camera::Update() {
 
         m_tiThirdPersonInfo.m_v32EyePos = DirectX::XMVectorSubtract(vObjPos, v3Dist);
     } else {
+        auto& v3EyePos = m_fiFirstPersonInfo.m_v32EyePos;
+        
         if (InputManager::Instance().IsMouseLeftButtonDown()) {
             const auto fDx = InputManager::Instance().GetMouseDX();
             const auto fDy = InputManager::Instance().GetMouseDY();
 
             auto& v3Direction = m_fiFirstPersonInfo.m_v32Direction;
-            v3Direction = DirectX::XMVector3Transform(v3Direction, DirectX::XMMatrixRotationY(fDx * cCamearaConfigure.m_fFirstRotationFactorX));
+            v3Direction = DirectX::XMVector3Transform(
+                v3Direction, DirectX::XMMatrixRotationAxis(
+                    { 0.0f, DirectX::XMVectorGetY(v3EyePos), 0.0f },
+                    fDx * cCamearaConfigure.m_fFirstRotationFactorX)
+            );
 
             auto v3Right = DirectX::XMVector3Cross(m_fiFirstPersonInfo.m_v32Up, v3Direction);
-            v3Direction = DirectX::XMVector3Transform(m_fiFirstPersonInfo.m_v32Direction, DirectX::XMMatrixRotationAxis(v3Right, fDy * cCamearaConfigure.m_fFirstRotationFactorY));
+            v3Direction = DirectX::XMVector3Transform(v3Direction, DirectX::XMMatrixRotationAxis(v3Right, fDy * cCamearaConfigure.m_fFirstRotationFactorY));
         }
 
         const auto& v3ObjPos = m_pBoundGameObject->Position();
-        auto& v3EyePos = m_fiFirstPersonInfo.m_v32EyePos;
 
         v3EyePos = DirectX::XMLoadFloat3(&v3ObjPos);
         v3EyePos = DirectX::XMVectorAdd(v3EyePos, { cCamearaConfigure.m_f3FirstEyePosAdjust.x, cCamearaConfigure.m_f3FirstEyePosAdjust.y, cCamearaConfigure.m_f3FirstEyePosAdjust.z } );

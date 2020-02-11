@@ -25,6 +25,6 @@
         "default_first_eye_direction" : [0.0, 0.0, 1.0],
         "first_rotation_factor_x" : 0.001,
         "first_rotation_factor_y" : 0.001,
-        "first_eye_pos_adjust" : [0.0, 0.6, -2.0]
+        "first_eye_pos_adjust" : [0.0, 1.0, 0.0]
     }
 }
