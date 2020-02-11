@@ -16,7 +16,6 @@ private:
     void _ProcessJsonValue(rapidjson::Value::Array& dcRoot);
     void _ProcessJsonValue(rapidjson::Value::Object& dcRoot);
 
-    // std::shared_ptr<GameObject> _FindGameObjectByTag(std::string_view strTag, std::shared_ptr<InstancedGameObject> pCurNode);
 
 protected:
     virtual std::string GetJsonFilePath() = 0;

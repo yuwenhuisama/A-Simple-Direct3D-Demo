@@ -85,6 +85,8 @@ void Ground::_GenerateSphare(size_t uFrom, size_t uTo) {
         // scale
         iInfo.m_v3Scale = v3Scale;
 
+        iInfo.m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
+
         pShpare->AppendInstancedInfo(iInfo);
     }
 
@@ -141,6 +143,8 @@ void Ground::_GenerateCylinder(size_t uFrom, size_t uTo) {
         // scale
         iInfo.m_v3Scale = v3Scale;
 
+        iInfo.m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
+
         pCylinder->AppendInstancedInfo(iInfo);
     }
 
@@ -190,6 +194,8 @@ void Ground::_GenerateCuboid(size_t uFrom, size_t uTo) {
 
         // scale
         iInfo.m_v3Scale = v3Scale;
+
+        iInfo.m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
 
         pCuboid->AppendInstancedInfo(iInfo);
     }

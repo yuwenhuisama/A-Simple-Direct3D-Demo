@@ -23,6 +23,10 @@ public:
     virtual UINT GetIndicesCount() override;
 
     virtual void PreInitialize() override;
+
+    virtual float GetHeight() const { return m_fHeight; }
+    virtual float GetWidth() const { return m_fWidth; }
+    virtual float GetDepth() const { return m_fDepth; }
 };
 
 #endif // !_H_Cuboid_

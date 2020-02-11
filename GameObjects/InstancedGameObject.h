@@ -23,6 +23,8 @@ public:
 
     void AppendInstancedInfo(InstancedInfo& iiInfo);
     std::list<InstancedInfo>& GetAssignedInstancedInfo() { return m_lsInstancedInfoList; }
+
+    std::shared_ptr<GameObject> GetInnerGameObject() const { return m_pInstancedGameObject; }
 };
 
 #endif // !_H_INSTANCEDGAMEOBJECT_

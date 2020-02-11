@@ -26,6 +26,7 @@ void MainScene::OnReady() {
     m_pCarController = pCarController;
     
     // ----------
+    Camera::Instance().Initialize();
     Camera::Instance().BindTo(pCar);
 
     // ----------

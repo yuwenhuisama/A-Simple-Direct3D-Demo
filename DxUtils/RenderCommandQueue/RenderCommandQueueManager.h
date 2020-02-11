@@ -31,6 +31,7 @@ private:
     void _SetBaseModelRenderInfo(RenderCommand& rcCommand);
     void _SetTexture(RenderCommand& rcCommand);
     void _RenderSkyBox(RenderCommand& rcCommand);
+    void _SetLightInfo(RenderCommand& rcCommand);
 
 public:
     void Initialize();

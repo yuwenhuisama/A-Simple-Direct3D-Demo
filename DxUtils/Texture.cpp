@@ -3,11 +3,15 @@
 #include "DxUtils/D3DHelper.hpp"
 
 bool Texture::Load(std::wstring_view wstrFilePath) {
-    return Direct3DManager::Instance().CreateTexture(wstrFilePath, m_pResourceView, m_pTexture);
+    auto result = Direct3DManager::Instance().CreateTexture(wstrFilePath, m_pResourceView, m_pTexture);
+    assert(result == true);
+    return result;
 }
 
 bool Texture::LoadCube(std::wstring_view wstrFilePath) {
-    return Direct3DManager::Instance().CreateCubeTexture(wstrFilePath, m_pResourceView, m_pTexture);
+    auto result = Direct3DManager::Instance().CreateCubeTexture(wstrFilePath, m_pResourceView, m_pTexture);
+    assert(result == true);
+    return result;
 }
 
 Texture::~Texture() {

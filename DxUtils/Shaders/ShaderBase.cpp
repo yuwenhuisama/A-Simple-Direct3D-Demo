@@ -49,5 +49,6 @@ failed_exit:
     D3DHelper::SafeRelease(pShaderBuffer);
     D3DHelper::SafeRelease(pErrorBuffer);
 
+    assert(false);
     return false;
 }

@@ -45,9 +45,7 @@ void Shape::Initialize() {
 
     result = Direct3DManager::Instance().CreateBuffer(bdiDesc, ssiInitData, m_pIndexedBuffer);
 
-    if (!result) {
-        throw("Error when create buffer.");
-    }
+    assert(result == true);
 }
 
 void Shape::Update() {

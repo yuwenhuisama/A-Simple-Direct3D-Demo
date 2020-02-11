@@ -106,6 +106,8 @@ bool SkyBox::Initialize() {
     if (!_InitializeBuffer()) {
         return false;
     }
+
+    return true;
 }
 
 void SkyBox::Render() {

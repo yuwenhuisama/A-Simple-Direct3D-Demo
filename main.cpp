@@ -7,6 +7,8 @@
 #include "GameScenes/MainScene.h"
 #include "GameUtils/Timer.h"
 
+#include "GameUtils/GameConfigure.h"
+
 int _stdcall WinMain(
     HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -14,7 +16,8 @@ int _stdcall WinMain(
     int nCmdShow
 ) {
     if (Direct3DManager::Instance().Initialize(hInstance, 1024, 768, true)
-        && InputManager::Instance().Initialize(hInstance)) {
+        && InputManager::Instance().Initialize(hInstance)
+        && GameConfigure::Instance().Initialize("game_configure.json")) {
         Direct3DManager::Instance().StartWindow(nCmdShow);
 
         Timer::Instance().Initialize();

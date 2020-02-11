@@ -12,6 +12,7 @@ enum class RenderCommandType {
     SetBaseModelRenderInfo,
     SetTexture,
     RenderSkyBox,
+    SetLightInfo,
 };
 
 struct RenderCommand {

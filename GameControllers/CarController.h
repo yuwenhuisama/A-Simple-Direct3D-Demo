@@ -13,6 +13,8 @@ private:
     float m_fSpeed = 0.0f;
     float m_fAngle = 0.0f;
 
+    float m_fWheelAngle = 0.0f;
+
 public:
     CarController() = delete;
     CarController(std::shared_ptr<Car> pCar);
@@ -21,6 +23,8 @@ public:
     void Update();
 
     DirectX::XMVECTOR GetDirection() const { return m_v3Direction; }
+
+    float GetWheelRadius() const;
 };
 
 #endif // !_H_CARCONTROLLRE_

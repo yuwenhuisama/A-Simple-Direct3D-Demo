@@ -4,8 +4,16 @@
 #include <memory>
 #include <list>
 #include <string>
+#include <array>
+
 #include <d3d11.h>
 #include "DxUtils/Vertex.h"
+
+enum class RotationOrderAxis {
+    X = 0,
+    Y,
+    Z,
+};
 
 class GameObject : public std::enable_shared_from_this<GameObject>{
 protected:
@@ -14,6 +22,8 @@ protected:
     DirectX::XMFLOAT3 m_v3Position { 0, 0, 0 };
     DirectX::XMFLOAT3 m_v3Scale { 1.0f, 1.0f, 1.0f };
     DirectX::XMFLOAT3 m_v3Rotation { 0.0f, 0.0f, 0.0f };
+
+    std::array<RotationOrderAxis, 3> m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
 
 public:
     GameObject() = default;
@@ -32,6 +42,9 @@ public:
 
     void SetTag(std::string_view strvTag) { m_strTag = strvTag; }
     std::string_view GetTag() { return m_strTag; }
+
+    void SetRotationOrder(const std::array<RotationOrderAxis, 3>& arrOrder) { m_arrRotationOrder =  arrOrder; }
+    const std::array<RotationOrderAxis, 3>& GetRotationOrder() const { return m_arrRotationOrder; }
 
 };
 

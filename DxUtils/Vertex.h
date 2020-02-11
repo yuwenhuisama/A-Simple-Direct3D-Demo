@@ -8,7 +8,6 @@ struct Vertex {
     DirectX::XMFLOAT3 m_f3Normal;
     DirectX::XMFLOAT3 m_f3Tangent;
     DirectX::XMFLOAT2 m_f2Tex0;
-    // DirectX::XMFLOAT4 m_fColor;
 };
 
 struct SkyBoxVertex {

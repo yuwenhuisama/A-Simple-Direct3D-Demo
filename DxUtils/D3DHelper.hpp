@@ -5,9 +5,11 @@
 #include <DirectXMath.h>
 #include <functional>
 
+#include <array>
 #include <string>
-
 #include <Windows.h>
+
+#include "GameObjects/GameObject.h"
 
 namespace D3DHelper {
     template<class T>
@@ -18,7 +20,11 @@ namespace D3DHelper {
         }
     }
 
-    DirectX::XMMATRIX CalcWorldMatrix(const DirectX::XMFLOAT3& v3Translation, const  DirectX::XMFLOAT3& v3Rotation, const  DirectX::XMFLOAT3& v3Scale);
+    DirectX::XMMATRIX CalcWorldMatrix(
+        const DirectX::XMFLOAT3& v3Translation,
+        const DirectX::XMFLOAT3& v3Rotation,
+        const DirectX::XMFLOAT3& v3Scale,
+        const std::array<RotationOrderAxis, 3>& arrRotationOrder);
 
     std::wstring StringToWString(const std::string& str);
     std::string WStringToString(const std::wstring &wstr);
@@ -37,10 +43,11 @@ namespace D3DHelper {
 };
 
 struct InstancedInfo {
-    DirectX::XMFLOAT3 m_v3Position;
-    DirectX::XMFLOAT3 m_v3Rotation;
-    DirectX::XMFLOAT3 m_v3Scale;
-    std::function<void(InstancedInfo&)> m_fUpdate;
+    DirectX::XMFLOAT3 m_v3Position = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 m_v3Rotation = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 m_v3Scale = { 1.0f, 1.0f, 1.0f };
+    std::array<RotationOrderAxis, 3> m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
+    std::function<void(InstancedInfo&)> m_fUpdate = nullptr;
 };
 
 #endif // !_H_D3DHELPER_

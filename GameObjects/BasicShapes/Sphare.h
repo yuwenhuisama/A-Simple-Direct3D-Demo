@@ -23,6 +23,8 @@ public:
     virtual UINT GetIndicesCount();
 
     virtual void PreInitialize();
+
+    virtual float GetRadius() const { return m_fRadius; }
 };
 
 #endif // !_H_SPHARE_

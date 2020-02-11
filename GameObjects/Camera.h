@@ -39,6 +39,8 @@ private:
 
 public:
     static Camera& Instance();
+
+    void Initialize();
     void Update();
     void SwitchMode();
 

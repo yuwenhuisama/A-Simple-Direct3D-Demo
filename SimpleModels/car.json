@@ -8,7 +8,7 @@
             "width" : 1.0,
             "height" : 0.5,
             "depth" : 2.0,
-            "texture" : "Textures/chouyou.jpg",
+            "texture" : "Textures/wulian.jpg",
             "render_info" : [
                 {
                     "position": [0.0, 0.0, 0.0],
@@ -25,7 +25,7 @@
             "height": 0.3,
             "stack_count" : 100,
             "slice_count" : 100,
-            "texture" : "Textures/likailikai.jpg",
+            "texture" : "Textures/naotou.jpg",
             "render_info" : [
                 {
                     "position": [ 0.65, 0.0, 0.5 ],

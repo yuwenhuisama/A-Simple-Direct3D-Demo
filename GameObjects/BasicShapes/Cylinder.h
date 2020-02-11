@@ -31,6 +31,11 @@ public:
     virtual UINT GetIndicesCount() override;
 
     virtual void PreInitialize() override;
+
+    virtual float GetBottomRadius() const { return m_fBottomRadius; }
+    virtual float GetTopRadius() const { return m_fTopRadius; }
+
+    virtual float GetHeight() const { return m_fHeight; }
 };
 
 #endif // ! _H_CYLINDER_

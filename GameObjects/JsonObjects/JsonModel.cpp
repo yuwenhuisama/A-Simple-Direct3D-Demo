@@ -18,12 +18,15 @@ std::list<InstancedInfo> JsonModel::_GetInstancedInfo(rapidjson::Value::Object& 
 
     InstancedInfo iiInfo;
     iiInfo.m_fUpdate = nullptr;
+    assert(dcDom.HasMember("render_info") == true);
     auto vRenderInfo = dcDom.FindMember("render_info")->value.GetArray();
 
     auto uSize = vRenderInfo.Size();
 
     for (auto i = 0u; i < uSize; ++i) {
         auto vObj = vRenderInfo[i].GetObject();
+        assert((vObj.HasMember("position") && vObj.HasMember("rotation") && vObj.HasMember("scale")) == true);
+        
         auto vArray = vObj.FindMember("position")->value.GetArray();
         iiInfo.m_v3Position = { vArray[0].GetFloat(), vArray[1].GetFloat(), vArray[2].GetFloat() };
 
@@ -37,80 +40,111 @@ std::list<InstancedInfo> JsonModel::_GetInstancedInfo(rapidjson::Value::Object& 
         vArray = vObj.FindMember("scale")->value.GetArray();
         iiInfo.m_v3Scale = { vArray[0].GetFloat(), vArray[1].GetFloat(), vArray[2].GetFloat() };
 
-        iiList.push_back(iiInfo);
+        iiInfo.m_fUpdate = nullptr;
+        iiInfo.m_arrRotationOrder = { RotationOrderAxis::X, RotationOrderAxis::Y, RotationOrderAxis::Z };
+
+        iiList.push_back(std::move(iiInfo));
     }
 
     return iiList;
 }
 
 void JsonModel::_ProcessJsonValue(rapidjson::Value::Object& dcRoot) {
-    if (dcRoot.HasMember("type")) {
-        auto itType = dcRoot.FindMember("type");
-        auto strType = std::string(itType->value.GetString());
+    assert(dcRoot.HasMember("type") == true);
 
-        if (strType == "conbinant") {
-            auto dcChildren = dcRoot.FindMember("children")->value.GetArray();
-            this->_ProcessJsonValue(dcChildren);
-        } else if (strType == "cylinder") {
-            auto fTopRadius = dcRoot.FindMember("top_radius")->value.GetFloat();
-            auto fBottomRadius = dcRoot.FindMember("bottom_radius")->value.GetFloat();
-            auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
-            auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
-            auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+    auto itType = dcRoot.FindMember("type");
+    auto strType = std::string(itType->value.GetString());
 
-            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
-            auto iiList = this->_GetInstancedInfo(dcRoot);
+    if (strType == "conbinant") {
+        assert(dcRoot.HasMember("children") == true);
 
-            auto pInnerCylindre = std::make_shared<Cylinder>(fTopRadius, fBottomRadius, fHeight, uSliceCount, uStackCount);
-            pInnerCylindre->Initialize();
+        auto dcChildren = dcRoot.FindMember("children")->value.GetArray();
+        this->_ProcessJsonValue(dcChildren);
+    } else if (strType == "cylinder") {
+        assert((dcRoot.HasMember("top_radius") &&  dcRoot.HasMember("bottom_radius") && 
+            dcRoot.HasMember("height") &&
+            dcRoot.HasMember("stack_count") &&
+            dcRoot.HasMember("slice_count") &&
+            dcRoot.HasMember("tag")) == true);
 
-            auto pTexture = std::make_shared<Texture>();
-            pTexture->Load(strTexture);
-            pInnerCylindre->SetTexture(pTexture);
+        auto fTopRadius = dcRoot.FindMember("top_radius")->value.GetFloat();
+        auto fBottomRadius = dcRoot.FindMember("bottom_radius")->value.GetFloat();
+        auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
+        auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
+        auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+        auto strTag = std::string(dcRoot.FindMember("tag")->value.GetString());
 
-            auto pCylinder = std::make_shared<InstancedGameObject>(pInnerCylindre);
-            pCylinder->GetAssignedInstancedInfo() = iiList;
+        auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
+        auto iiList = this->_GetInstancedInfo(dcRoot);
 
-            this->AddChild(pCylinder);
-        } else if (strType == "sphare") {
-            auto fRadius = dcRoot.FindMember("radius")->value.GetFloat();
-            auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
-            auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+        auto pInnerCylinder = std::make_shared<Cylinder>(fTopRadius, fBottomRadius, fHeight, uSliceCount, uStackCount);
+        pInnerCylinder->Initialize();
 
-            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
-            auto iiList = this->_GetInstancedInfo(dcRoot);
+        auto pTexture = std::make_shared<Texture>();
+        pTexture->Load(strTexture);
+        pInnerCylinder->SetTexture(pTexture);
 
-            auto pInnerSphare = std::make_shared<Sphare>(fRadius, uStackCount, uSliceCount);
-            pInnerSphare->Initialize();
+        auto pCylinder = std::make_shared<InstancedGameObject>(pInnerCylinder);
+        pCylinder->GetAssignedInstancedInfo() = iiList;
 
-            auto pTexture = std::make_shared<Texture>();
-            pTexture->Load(strTexture);
-            pInnerSphare->SetTexture(pTexture);
+        pCylinder->SetTag(strTag);
 
-            auto pShpare = std::make_shared<InstancedGameObject>(pInnerSphare);
-            pShpare->GetAssignedInstancedInfo() = iiList;
+        this->AddChild(pCylinder);
+    } else if (strType == "sphare") {
+        assert((dcRoot.HasMember("radius") && 
+            dcRoot.HasMember("stack_count") &&
+            dcRoot.HasMember("slice_count") &&
+            dcRoot.HasMember("tag")) == true);
 
-            this->AddChild(pShpare);
+        auto fRadius = dcRoot.FindMember("radius")->value.GetFloat();
+        auto uStackCount = dcRoot.FindMember("stack_count")->value.GetUint();
+        auto uSliceCount = dcRoot.FindMember("slice_count")->value.GetUint();
+        auto strTag = std::string(dcRoot.FindMember("tag")->value.GetString());
 
-        } else if (strType == "cuboid") {
-            auto fWidth = dcRoot.FindMember("width")->value.GetFloat();
-            auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
-            auto fDepth = dcRoot.FindMember("depth")->value.GetFloat();
-            auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
-            auto iiList = this->_GetInstancedInfo(dcRoot);
+        auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
+        auto iiList = this->_GetInstancedInfo(dcRoot);
 
-            auto pInnerCuboid = std::make_shared<Cuboid>(fWidth, fHeight, fDepth);
-            pInnerCuboid->Initialize();
+        auto pInnerSphare = std::make_shared<Sphare>(fRadius, uStackCount, uSliceCount);
+        pInnerSphare->Initialize();
 
-            auto pTexture = std::make_shared<Texture>();
-            pTexture->Load(strTexture);
-            pInnerCuboid->SetTexture(pTexture);
+        auto pTexture = std::make_shared<Texture>();
+        pTexture->Load(strTexture);
+        pInnerSphare->SetTexture(pTexture);
 
-            auto pCuboid = std::make_shared<InstancedGameObject>(pInnerCuboid);
-            pCuboid->GetAssignedInstancedInfo() = iiList;
+        auto pSphare = std::make_shared<InstancedGameObject>(pInnerSphare);
+        pSphare->GetAssignedInstancedInfo() = iiList;
 
-            this->AddChild(pCuboid);
-        }
+        pSphare->SetTag(strTag);
+
+        this->AddChild(pSphare);
+
+    } else if (strType == "cuboid") {
+        assert((dcRoot.HasMember("width") && 
+            dcRoot.HasMember("height") &&
+            dcRoot.HasMember("depth") &&
+            dcRoot.HasMember("tag")) == true);
+
+        auto fWidth = dcRoot.FindMember("width")->value.GetFloat();
+        auto fHeight = dcRoot.FindMember("height")->value.GetFloat();
+        auto fDepth = dcRoot.FindMember("depth")->value.GetFloat();
+        auto strTag = std::string(dcRoot.FindMember("tag")->value.GetString());
+
+        auto strTexture = D3DHelper::StringToWString(dcRoot.FindMember("texture")->value.GetString());
+        auto iiList = this->_GetInstancedInfo(dcRoot);
+
+        auto pInnerCuboid = std::make_shared<Cuboid>(fWidth, fHeight, fDepth);
+        pInnerCuboid->Initialize();
+
+        auto pTexture = std::make_shared<Texture>();
+        pTexture->Load(strTexture);
+        pInnerCuboid->SetTexture(pTexture);
+
+        auto pCuboid = std::make_shared<InstancedGameObject>(pInnerCuboid);
+        pCuboid->GetAssignedInstancedInfo() = iiList;
+
+        pCuboid->SetTag(strTag);
+
+        this->AddChild(pCuboid);
     }
 }
 
@@ -166,7 +200,6 @@ std::shared_ptr<GameObject> JsonModel::FindGameObjectByTag(std::string_view strT
     if (strTag == this->GetTag()) {
         return shared_from_this();
     } else {
-        // return this->_FindGameObjectByTag(strTag, shared_from_this());
         for (auto pObject : m_lsGameObjects) {
             if (pObject->GetTag() == strTag) {
                 return pObject;

@@ -318,6 +318,7 @@ bool Direct3DManager::Initialize(HINSTANCE hInstance,UINT uWidth, UINT uHeight, 
 
 failed_exit:
     m_eState = ApplicationState::Quite;
+    assert(false);
     return false;
 }
 

@@ -37,7 +37,7 @@ void RenderCommandQueueManager::_RenderObject(RenderCommand& rcCommand){
         if (m_pCurInfo) {
             for (auto&& info : *m_pCurInfo) {
                 std::function<DirectX::XMMATRIX(void)> fCallback = [this, &info]() -> DirectX::XMMATRIX {
-                    return D3DHelper::CalcWorldMatrix(info.m_v3Position, info.m_v3Rotation, info.m_v3Scale) * this->m_mtBuffer;
+                    return D3DHelper::CalcWorldMatrix(info.m_v3Position, info.m_v3Rotation, info.m_v3Scale, info.m_arrRotationOrder) * this->m_mtBuffer;
                 };
 
                 Direct3DManager::Instance().GetVertexShader()->Apply(
@@ -93,11 +93,15 @@ void RenderCommandQueueManager::_RenderSkyBox(RenderCommand& rcCommand) {
     d3dInstance.DrawSkyBoxWithShader(
         pVertexBuffer,
         pIndexedBuffer,
-        uStride,
-        uIndicesCount,
+        static_cast<UINT>(uStride),
+        static_cast<UINT>(uIndicesCount),
         pVertexShader,
         pPixelShader
     );
+}
+
+void RenderCommandQueueManager::_SetLightInfo(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().GetPixelShader()->Apply(rcCommand);
 }
 
 void RenderCommandQueueManager::Render() {
@@ -130,6 +134,9 @@ void RenderCommandQueueManager::Render() {
                     break;
                 case RenderCommandType::RenderSkyBox:
                     this->_RenderSkyBox(*iter);
+                    break;
+                case RenderCommandType::SetLightInfo:
+                    this->_SetLightInfo(*iter);
                     break;
                 default:
                     break;
