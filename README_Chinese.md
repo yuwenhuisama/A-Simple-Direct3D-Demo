@@ -21,7 +21,8 @@
 - 在第三人称视角下，滑动鼠标滚轮能够滑动放缩摄像机和小车的距离
 - 使用`Y`键能够打开或者关闭阴影效果
 
-## 相关算法技术
+## 相关说明
+- 源码使用了`C++ 17`的特性，因此编译器需要打开`C++ 17`的编译开关（如果默认没有打开）
 - 随机场景生成方法参见`GameObject/JsonObjects/Ground.cpp`中的`_DecideGeneratingRegion()`和`_RandomGenerateModels()`方法
 - 光照模型使用`Blinn-Phong`光照模型，阴影生成算法使用了`阴影贴图`，具体实现参见`HLSL/shadow_map_shape_ps.fx`、`HLSL/shadow_map_shape_vs.fx`以及`DxUtils/Shaders/SHdowedLightCommonVertexShader.h/.cpp`、`DxUtils/Shaders/SHdowedLightCommonPixelShader.h/.cpp`
 - 渲染框架实现了一个渲染命令队列，具体参见`DxUtils/RenderCommandQueueManager.h/.cpp`
