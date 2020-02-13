@@ -14,11 +14,8 @@ FOREACH(LIB ${DIRECTX_DEPENDENCIES})
     link_libraries(${FOUND_LIB_${LIB}})
 ENDFOREACH (LIB)
 
-if (${CMAKE_BUILD_TYPE} STREQUAL "RELEASE" OR ${CMAKE_BUILD_TYPE} STREQUAL "Release")
-    link_libraries(${CMAKE_FIND_ROOT_PATH}/lib/DirectXTex.lib)
-elseif (${CMAKE_BUILD_TYPE} STREQUAL "DEBUG" OR ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    link_libraries(${CMAKE_FIND_ROOT_PATH}/debug/lib/DirectXTex.lib)
-endif()
+FIND_LIBRARY(DIRECTXTEX_LIB DirectXTex.lib)
+link_libraries(${DIRECTXTEX_LIB})
 
 include(CTest)
 enable_testing()
