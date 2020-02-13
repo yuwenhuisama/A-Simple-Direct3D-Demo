@@ -32,6 +32,11 @@ private:
     void _SetTexture(RenderCommand& rcCommand);
     void _RenderSkyBox(RenderCommand& rcCommand);
     void _SetLightInfo(RenderCommand& rcCommand);
+    void _BeginRenderShadowMap(RenderCommand& rcCommand);
+    void _EndRenderShadowMap(RenderCommand& rcCommand);
+    void _SetShadowMapTexture(RenderCommand& rcCommand);
+    void _ClearColorBuffer(RenderCommand& rcCommand);
+    void _ClearDepthStencilBuffer(RenderCommand& rcCommand);
 
 public:
     void Initialize();

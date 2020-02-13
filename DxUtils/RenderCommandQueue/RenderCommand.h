@@ -13,6 +13,11 @@ enum class RenderCommandType {
     SetTexture,
     RenderSkyBox,
     SetLightInfo,
+    BeginRenderShadowMap,
+    EndRenderShadowMap,
+    SetShadowMapTexture,
+    ClearColorBuffer,
+    ClearDepthStencilBuffer,
 };
 
 struct RenderCommand {

@@ -4,11 +4,8 @@
 
 #include "DxUtils/Direct3DManager.h"
 
-// #include "DxUtils/Shaders/CommonVertexShader.h"
-// #include "DxUtils/Shaders/CommonPixelShader.h"
-
-#include "DxUtils/Shaders/LightCommonVertexShader.h"
-#include "DxUtils/Shaders/LightCommonPixelShader.h"
+#include "DxUtils/Shaders/ShadowedLightCommonVertexShader.h"
+#include "DxUtils/Shaders/ShadowedLightCommonPixelShader.h"
 
 #include "DxUtils/Shaders/SkyBoxVertexShader.h"
 #include "DxUtils/Shaders/SkyBoxPixelShader.h"
@@ -65,16 +62,10 @@ void MainScene::OnReady() {
     this->SetLight(pLight);
 
     // ----------
-    // auto pPixelShader = std::make_shared<CommonPixelShader>();
-    // pPixelShader->Initialize();
-
-    // auto pVertexShader = std::make_shared<CommonVertexShader>();
-    // pVertexShader->Initialize();
-
-    auto pPixelShader = std::make_shared<LightCommonPixelShader>();
+    auto pPixelShader = std::make_shared<ShadowedLightCommonPixelShader>();
     pPixelShader->Initialize();
 
-    auto pVertexShader = std::make_shared<LightCommonVertexShader>();
+    auto pVertexShader = std::make_shared<ShadowedLightCommonVertexShader>();
     pVertexShader->Initialize();
 
     Direct3DManager::Instance().SetPixelShader(pPixelShader);
@@ -104,6 +95,51 @@ void MainScene::OnRelease(){
 }
 
 void MainScene::Render() {
+    // render shadow map
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::BeginRenderShadowMap,
+        nullptr
+    });
+
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::ClearDepthStencilBuffer,
+        nullptr
+    });
+
+    if (m_pLight) {
+        std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
+            const auto v4EyePose = Camera::Instance().GetEyePos();
+            LightCommonPixelShaderBuffer bfBuffer;
+            bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
+            bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
+
+            return bfBuffer;
+        };
+
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+                RenderCommandType::SetLightInfo,
+                fCallback
+            }
+        );
+    }
+    this->RenderGameObjects();
+
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::EndRenderShadowMap,
+        nullptr
+    });
+
+    // render scene
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::ClearColorBuffer,
+        nullptr
+    });
+
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::ClearDepthStencilBuffer,
+        nullptr
+    });
+
     if (m_pLight) {
         std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
             const auto v4EyePose = Camera::Instance().GetEyePos();
@@ -121,5 +157,11 @@ void MainScene::Render() {
         );
     }
 
-    Scene::Render();
+    RenderCommandQueueManager::Instance().Push(RenderCommand {
+        RenderCommandType::SetShadowMapTexture,
+        nullptr
+    });
+
+    this->RenderGameObjects();
+    this->RenderSkyBox();
 }

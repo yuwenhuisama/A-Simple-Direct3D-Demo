@@ -72,6 +72,7 @@ void RenderCommandQueueManager::_SetBaseModelRenderInfo(RenderCommand& rcCommand
 }
 
 void RenderCommandQueueManager::_SetTexture(RenderCommand& rcCommand) {
+    // if( )
     auto pTexture = std::any_cast<std::shared_ptr<Texture>>(rcCommand.m_objRenderInfo);
     Direct3DManager::Instance().ApplyTexture(pTexture);
 }
@@ -101,8 +102,30 @@ void RenderCommandQueueManager::_RenderSkyBox(RenderCommand& rcCommand) {
 }
 
 void RenderCommandQueueManager::_SetLightInfo(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().GetVertexShader()->Apply(rcCommand);
     Direct3DManager::Instance().GetPixelShader()->Apply(rcCommand);
 }
+
+void RenderCommandQueueManager::_BeginRenderShadowMap(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().SetIsRenderShadowMap(true);
+}
+
+void RenderCommandQueueManager::_EndRenderShadowMap(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().SetIsRenderShadowMap(false);
+}
+
+void RenderCommandQueueManager::_ClearColorBuffer(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().ClearColorBuffer();
+}
+
+void RenderCommandQueueManager::_ClearDepthStencilBuffer(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().ClearDepthStencilBuffer();
+}
+
+void RenderCommandQueueManager::_SetShadowMapTexture(RenderCommand& rcCommand) {
+    Direct3DManager::Instance().ApplyShadowMapTexture();
+}
+
 
 void RenderCommandQueueManager::Render() {
     if (!m_lsQueue.empty()) {
@@ -138,6 +161,20 @@ void RenderCommandQueueManager::Render() {
                 case RenderCommandType::SetLightInfo:
                     this->_SetLightInfo(*iter);
                     break;
+                case RenderCommandType::BeginRenderShadowMap:
+                    this->_BeginRenderShadowMap(*iter);
+                    break;
+                case RenderCommandType::EndRenderShadowMap:
+                    this->_EndRenderShadowMap(*iter);
+                    break;
+                case RenderCommandType::ClearColorBuffer:
+                    this->_ClearColorBuffer(*iter);
+                    break;
+                case RenderCommandType::ClearDepthStencilBuffer:
+                    this->_ClearDepthStencilBuffer(*iter);
+                    break;
+                case RenderCommandType::SetShadowMapTexture:
+                    this->_SetShadowMapTexture(*iter);
                 default:
                     break;
             }

@@ -18,6 +18,10 @@ protected:
 
     virtual std::shared_ptr<GameObject> FindGameObjectByTag(std::string_view strvTag);
 
+protected:
+    virtual void RenderGameObjects();
+    virtual void RenderSkyBox();
+
 public:
     Scene() = default;
 

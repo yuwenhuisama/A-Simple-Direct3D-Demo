@@ -1,16 +1,17 @@
-#ifndef _H_LIGHTCOMMONVERTEXSHADER_
-#define _H_LIGHTCOMMONVERTEXSHADER_
+#ifndef _H_SHADOWMAPVERTEXSHADER_
+#define _H_SHADOWMAPVERTEXSHADER_
 
 #include "VertexShaderBase.h"
 #include "DxUtils/ShaderBuffer.h"
 
-class LightCommonVertexShader : public VertexShaderBase {
+class ShadowMapVertexShader : public VertexShaderBase {
 private:
     ID3D11Buffer* m_pWVPBuffer = nullptr;
+    DirectX::XMFLOAT3 m_f3LightPos = { 0.0f, 0.0f, 0.0f };
 
 public:
-    LightCommonVertexShader();
-    virtual ~LightCommonVertexShader();
+    ShadowMapVertexShader();
+    virtual ~ShadowMapVertexShader();
 
     virtual std::wstring GetShaderFile() override;
     virtual std::string GetShaderEntryName() override;
@@ -21,8 +22,8 @@ public:
 
     virtual void Apply(const RenderCommand& rcCommand) override;
 
-    void UpdateWVPMatrix(const LightCommonVertexShaderBuffer& mtBuffer);
-    
+    void UpdateWVPMatrix(const ShadowMapVertexShaderBuffer& mtBuffer);
+        
 };
 
-#endif // !_H_LIGHTCOMMONVERTEXSHADER_
+#endif // !_H_SHADOWMAPVERTEXSHADER_

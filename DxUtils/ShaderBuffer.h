@@ -17,4 +17,20 @@ struct LightCommonVertexShaderBuffer {
     DirectX::XMMATRIX m_mtProj;
 };
 
+struct ShadowMapVertexShaderBuffer {
+    DirectX::XMMATRIX m_mtWorld;
+    DirectX::XMMATRIX m_mtView;
+    DirectX::XMMATRIX m_mtProj;
+};
+
+struct ShadowedLightCommonVertexShaderBuffer {
+    DirectX::XMMATRIX m_mtWorld;
+    DirectX::XMMATRIX m_mtWorldNormal;
+    DirectX::XMMATRIX m_mtView;
+    DirectX::XMMATRIX m_mtProj;
+
+    DirectX::XMMATRIX m_mtLightView;
+    DirectX::XMMATRIX m_mtLightProj;
+};
+
 #endif // !_SHADERBUFFER_

@@ -98,7 +98,6 @@ namespace D3DHelper {
         D3D11_TEXTURE2D_DESC texDesc, texArrayDesc;
         srcTex->GetDesc(&texDesc);
 
-        // 要求宽高比4:3
         if (texDesc.Width * 3 != texDesc.Height * 4) {
             SafeRelease(srcTex);
             SafeRelease(srcTexSRV);
@@ -108,7 +107,7 @@ namespace D3DHelper {
         UINT squareLength = texDesc.Width / 4;
         texArrayDesc.Width = squareLength;
         texArrayDesc.Height = squareLength;
-        texArrayDesc.MipLevels = (generateMips ? texDesc.MipLevels - 2 : 1);	// 立方体的mip等级比整张位图的少2
+        texArrayDesc.MipLevels = (generateMips ? texDesc.MipLevels - 2 : 1);
         texArrayDesc.ArraySize = 6;
         texArrayDesc.Format = texDesc.Format;
         texArrayDesc.SampleDesc.Count = 1;
@@ -116,7 +115,7 @@ namespace D3DHelper {
         texArrayDesc.Usage = D3D11_USAGE_DEFAULT;
         texArrayDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         texArrayDesc.CPUAccessFlags = 0;
-        texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;	// 允许从中创建TextureCube
+        texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
         ID3D11Texture2D* texArray = nullptr;
         hResult = d3dDevice->CreateTexture2D(&texArrayDesc, nullptr, &texArray);

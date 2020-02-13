@@ -250,6 +250,7 @@ bool Direct3DManager::Initialize(HINSTANCE hInstance,UINT uWidth, UINT uHeight, 
     if (!_InitWindow(hInstance, uWidth, uHeight)) {
         goto failed_exit;
     }
+
     m_hInstance = hInstance;
 
     UINT uCreateDeviceFlags = 0;
@@ -309,6 +310,10 @@ bool Direct3DManager::Initialize(HINSTANCE hInstance,UINT uWidth, UINT uHeight, 
 
     m_pDeviceContext->RSSetViewports(1, &vpViewport);
 
+    m_pShadowMapPixelShader->Initialize();
+    m_pShadowMapVertexShader->Initialize();
+    m_pDepthStencilTexture->Initialize();
+
     m_eState = ApplicationState::Running;
 
     // RenderCommandQueue
@@ -322,12 +327,20 @@ failed_exit:
     return false;
 }
 
-void Direct3DManager::_Render() {
-    const DirectX::XMVECTORF32 f4Color = { 0.0f, 0.0f, 1.0f, 1.0f};
-
+void Direct3DManager::ClearColorBuffer() {
+    constexpr DirectX::XMVECTORF32 f4Color = { 0.0f, 0.0f, 1.0f, 1.0f};
     m_pDeviceContext->ClearRenderTargetView(m_pRenderTargetView, reinterpret_cast<const float*>(&f4Color));
-    m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
 
+void Direct3DManager::ClearDepthStencilBuffer() {
+    if (m_bIsRenderShadowMap) {
+        m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilTexture->GetDpethStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    } else {
+        m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    }
+}
+
+void Direct3DManager::_Render() {
     SceneManager::Instance().Render();
     RenderCommandQueueManager::Instance().Render();
 
@@ -377,14 +390,6 @@ bool Direct3DManager::CreateBuffer(
     return true;
 }
 
-void Direct3DManager::SetPixelShader(std::shared_ptr<PixelShaderBase> pPixelShader) {
-    m_pPixelShader = pPixelShader;
-}
-
-void Direct3DManager::SetVertexShader(std::shared_ptr<VertexShaderBase> pVertexShader) {
-    m_pVertexShader = pVertexShader;
-}
-
 bool Direct3DManager::CreateInputLayout(
     const D3D11_INPUT_ELEMENT_DESC* arrInputLayoutDescArr,
     UINT uDescArrSize,
@@ -411,16 +416,14 @@ bool Direct3DManager::DrawObjectWithShader(
     UINT nStride,
     UINT nIndexCount) {
 
-    m_pDeviceContext->VSSetShader(m_pVertexShader->GetVertexShader(), nullptr, 0);
-    m_pDeviceContext->PSSetShader(m_pPixelShader->GetPixelShader(), nullptr, 0);
+    m_pDeviceContext->VSSetShader(GetVertexShader()->GetVertexShader(), nullptr, 0);
+    m_pDeviceContext->PSSetShader(GetPixelShader()->GetPixelShader(), nullptr, 0);
 
     UINT nOffset = 0;
-    m_pDeviceContext->IASetInputLayout(m_pVertexShader->GetInputLayout());
+    m_pDeviceContext->IASetInputLayout(GetVertexShader()->GetInputLayout());
     m_pDeviceContext->IASetVertexBuffers(0, 1, &pVertexBuffer, &nStride, &nOffset);
     m_pDeviceContext->IASetIndexBuffer(pIndexedBuffer, DXGI_FORMAT_R32_UINT, 0);
     m_pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    // fCallBack(m_pVertexShader, m_pPixelShader);
 
     m_pDeviceContext->DrawIndexed(nIndexCount, 0, 0);
 
@@ -575,6 +578,42 @@ bool Direct3DManager::CreateTexture(std::wstring_view strvFilePath, ID3D11Shader
 }
 
 void Direct3DManager::ApplyTexture(std::shared_ptr<Texture> pTexture) {
-    auto pShaderResrouceView = pTexture->GetShaderResourceView();
-    m_pDeviceContext->PSSetShaderResources(0, 1, &pShaderResrouceView);
+    auto pShaderResourceView = pTexture->GetShaderResourceView();
+    m_pDeviceContext->PSSetShaderResources(0, 1, &pShaderResourceView);
 }
+
+void Direct3DManager::ApplyShadowMapTexture() {
+    auto pShaderResourceView = m_pDepthStencilTexture->GetShaderResourceView();
+    m_pDeviceContext->PSSetShaderResources(1, 1, &pShaderResourceView);
+}
+
+bool Direct3DManager::CreateDepthStencilTexture(const D3D11_TEXTURE2D_DESC& d2ddDesc, ID3D11Texture2D*& pTexture) {
+    const auto result = m_pDevice->CreateTexture2D(&d2ddDesc, nullptr, &pTexture);
+    if (FAILED(result)) {
+        return false;
+    }
+    return true;
+}
+
+bool Direct3DManager::CreateDepthStencilView(const D3D11_DEPTH_STENCIL_VIEW_DESC ddsvdDepthStencilViewDesc,
+    ID3D11Texture2D* pDepthStencilTexture,
+    ID3D11DepthStencilView*& pDepthStencilView) {
+    
+    const auto result = m_pDevice->CreateDepthStencilView(pDepthStencilTexture, &ddsvdDepthStencilViewDesc, &pDepthStencilView);
+    if (FAILED(result)) {
+        return false;
+    }
+    return true;
+}
+
+bool Direct3DManager::CreateShaderResourceView(const D3D11_SHADER_RESOURCE_VIEW_DESC& dsrvdShaderResourceViewDesc,
+    ID3D11Texture2D* pTexture,
+    ID3D11ShaderResourceView*& pResourceView) {
+
+    const auto result = m_pDevice->CreateShaderResourceView(pTexture, &dsrvdShaderResourceViewDesc, &pResourceView);
+    if (FAILED(result)) {
+        return false;
+    }
+    return true;
+}
+
