@@ -16,6 +16,8 @@ struct ThirdPersonCameraInfo {
     float m_fTheta = DirectX::XM_PI / 8 * 5;
     float m_fPhi = DirectX::XM_PI / 2;
     float m_fDistance = 7.0f;
+
+    float m_fMiddlScaleSpeed = 0.0f;
 };
 
 struct FirstPersonCameraInfo {

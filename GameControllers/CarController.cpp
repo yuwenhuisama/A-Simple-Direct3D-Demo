@@ -30,6 +30,7 @@ void CarController::Update() {
 
     auto pLockedCar = m_pCar.lock();
     // move left
+    bool bIsTurnning = false;
     if (m_fSpeed != 0.0f) {
         if (iManager.IsKeyDown(DIK_A)) {
             m_v3Direction = DirectX::XMVector3Normalize(DirectX::XMVector3Transform(m_v3Direction, DirectX::XMMatrixRotationY(-cCarConfigure.m_fTurnAngle * DirectX::XM_PI)));
@@ -38,6 +39,8 @@ void CarController::Update() {
             if (pLockedCar) {
                 pLockedCar->SetWheelAngle(-DirectX::XM_PI * cCarConfigure.m_fTurnWheelAngle);
             }
+
+            bIsTurnning = true;
         }
         // move right
         else if (iManager.IsKeyDown(DIK_D)) {
@@ -47,6 +50,8 @@ void CarController::Update() {
             if (pLockedCar) {
                 pLockedCar->SetWheelAngle(DirectX::XM_PI * cCarConfigure.m_fTurnWheelAngle);
             }
+
+            bIsTurnning = true;
         } else {
             pLockedCar->SetWheelAngle(0.0f);
         }
@@ -56,6 +61,8 @@ void CarController::Update() {
             if (pLockedCar) {
                 pLockedCar->SetWheelAngle(-DirectX::XM_PI * cCarConfigure.m_fTurnWheelAngle);
             }
+
+            bIsTurnning = true;
         }
         // move right
         else if (iManager.IsKeyDown(DIK_D)) {
@@ -63,23 +70,24 @@ void CarController::Update() {
             if (pLockedCar) {
                 pLockedCar->SetWheelAngle(DirectX::XM_PI * cCarConfigure.m_fTurnWheelAngle);
             }
+
+            bIsTurnning = true;
         } else {
             pLockedCar->SetWheelAngle(0.0f);
         }
     }
 
-    // m_fSpeed = std::clamp(m_fSpeed, -0.5f, 0.5f);
-    if (m_fSpeed < cCarConfigure.m_fMinSpeedBack) {
-        m_fSpeed = cCarConfigure.m_fMinSpeedBack;
-    } else if (m_fSpeed > cCarConfigure.m_fMaxSpeedForward){
-        m_fSpeed = cCarConfigure.m_fMaxSpeedForward;
-    }
+    m_fSpeed = std::clamp(m_fSpeed, cCarConfigure.m_fMinSpeedBack, cCarConfigure.m_fMaxSpeedForward);
 
     if (std::abs(m_fSpeed) <= 1e-4f) {
         m_fSpeed = 0;
     }
 
-    m_v3Position = DirectX::XMVectorAdd(m_v3Position, DirectX::XMVectorScale(m_v3Direction, m_fSpeed));
+    if (bIsTurnning) {
+        m_v3Position = DirectX::XMVectorAdd(m_v3Position, DirectX::XMVectorScale(m_v3Direction, m_fSpeed / 1.4f));
+    } else {
+        m_v3Position = DirectX::XMVectorAdd(m_v3Position, DirectX::XMVectorScale(m_v3Direction, m_fSpeed));
+    }
     auto fRollAngle = m_fSpeed / pLockedCar->GetWheelRadius();
     m_fWheelAngle += fRollAngle;
     pLockedCar->SetWheelRollAngle(-m_fWheelAngle);
@@ -96,15 +104,15 @@ void CarController::Update() {
     };
 
     if (fPosX <= f4LogicRegion.x) {
-        m_v3Position = DirectX::XMVectorSetX(m_v3Position, f4LogicRegion.z);
-    } else if (fPosX >= f4LogicRegion.z) {
         m_v3Position = DirectX::XMVectorSetX(m_v3Position, f4LogicRegion.x);
+    } else if (fPosX >= f4LogicRegion.z) {
+        m_v3Position = DirectX::XMVectorSetX(m_v3Position, f4LogicRegion.z);
     }
 
     if (fPosZ <= f4LogicRegion.y) {
-        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, f4LogicRegion.w);
-    } else if (fPosZ >= f4LogicRegion.w) {
         m_v3Position = DirectX::XMVectorSetZ(m_v3Position, f4LogicRegion.y);
+    } else if (fPosZ >= f4LogicRegion.w) {
+        m_v3Position = DirectX::XMVectorSetZ(m_v3Position, f4LogicRegion.w);
     }
 
     if (pLockedCar) {

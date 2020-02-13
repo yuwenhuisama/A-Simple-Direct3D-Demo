@@ -50,6 +50,9 @@ struct RandomGroundConfigure {
 
 struct LightConfigure {
     DirectX::XMFLOAT3 m_f3Position = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT3 m_f3LightEyePosition = { 0.0f, 0.0f, 0.0f };
+    DirectX::XMFLOAT4 m_f4ProjectionRegion = { 0.0f, 0.0f, 0.0f, 0.0f };
+    DirectX::XMINT2 m_i2ShadowMapTextureSize = { 0, 0 };
 };
 
 struct SkyBoxConfigure {

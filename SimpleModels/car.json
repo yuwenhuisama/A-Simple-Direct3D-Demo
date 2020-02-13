@@ -11,7 +11,37 @@
             "texture" : "Textures/wulian.jpg",
             "render_info" : [
                 {
-                    "position": [0.0, 0.0, 0.0],
+                    "position": [0.0, 0.6, 0.0],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [1.0, 1.0, 1.0]
+                }
+            ]
+        },
+        {
+            "tag": "stick",
+            "type" : "cuboid",
+            "width" : 0.1,
+            "height" : 0.6,
+            "depth" : 0.1,
+            "texture" : "Textures/wulian.jpg",
+            "render_info" : [
+                {
+                    "position": [-0.45, 0.3, 0.5],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [1.0, 1.0, 1.0]
+                },
+                {
+                    "position": [0.45, 0.3, 0.5],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [1.0, 1.0, 1.0]
+                },
+                {
+                    "position": [-0.45, 0.3, -0.5],
+                    "rotation": [0.0, 0.0, 0.0],
+                    "scale": [1.0, 1.0, 1.0]
+                },
+                {
+                    "position": [0.45, 0.3, -0.5],
                     "rotation": [0.0, 0.0, 0.0],
                     "scale": [1.0, 1.0, 1.0]
                 }
@@ -45,6 +75,21 @@
                 {
                     "position": [ -0.65, 0.0, -0.5 ],
                     "rotation": [ 0.0, 0.0, 0.5 ],
+                    "scale": [ 1.0, 1.0, 1.0 ]
+                }
+            ]
+        },
+        {
+            "tag" : "wheel",
+            "type" : "sphare",
+            "radius": 0.5,
+            "stack_count" : 100,
+            "slice_count" : 100,
+            "texture" : "Textures/huaji.jpg",
+            "render_info" : [
+                {
+                    "position": [ 0.0, 1.3, -0.5 ],
+                    "rotation": [ 0.0, -0.5, 0.0 ],
                     "scale": [ 1.0, 1.0, 1.0 ]
                 }
             ]

@@ -4,6 +4,9 @@
 
 #include "DxUtils/Direct3DManager.h"
 
+#include "DxUtils/Shaders/LightCommonVertexShader.h"
+#include "DxUtils/Shaders/LightCommonPixelShader.h"
+
 #include "DxUtils/Shaders/ShadowedLightCommonVertexShader.h"
 #include "DxUtils/Shaders/ShadowedLightCommonPixelShader.h"
 
@@ -62,14 +65,27 @@ void MainScene::OnReady() {
     this->SetLight(pLight);
 
     // ----------
-    auto pPixelShader = std::make_shared<ShadowedLightCommonPixelShader>();
+    std::shared_ptr<PixelShaderBase> pPixelShader = std::make_shared<ShadowedLightCommonPixelShader>();
     pPixelShader->Initialize();
 
-    auto pVertexShader = std::make_shared<ShadowedLightCommonVertexShader>();
+    std::shared_ptr<VertexShaderBase> pVertexShader = std::make_shared<ShadowedLightCommonVertexShader>();
     pVertexShader->Initialize();
 
     Direct3DManager::Instance().SetPixelShader(pPixelShader);
     Direct3DManager::Instance().SetVertexShader(pVertexShader);
+
+    m_pShadowedVetexShader = pVertexShader;
+    m_pShadowedPixelShader = pPixelShader;
+
+    // ----------
+    pPixelShader = std::make_shared<LightCommonPixelShader>();
+    pPixelShader->Initialize();
+
+    pVertexShader = std::make_shared<LightCommonVertexShader>();
+    pVertexShader->Initialize();
+
+    m_pCommonVetexShader = pVertexShader;
+    m_pCommonPixelShader = pPixelShader;
 
     // ----------
     auto pSkyBoxPixelShader = std::make_shared<SkyBoxPixelShader>();
@@ -87,6 +103,17 @@ void MainScene::OnUpdate() {
         Camera::Instance().SwitchMode();
     }
 
+    if (InputManager::Instance().IsKeyTrigger(DIK_Y)) {
+        m_bIsRenderShadow = !m_bIsRenderShadow ;
+        if (m_bIsRenderShadow) {
+            Direct3DManager::Instance().SetPixelShader(m_pShadowedPixelShader);
+            Direct3DManager::Instance().SetVertexShader(m_pShadowedVetexShader);
+        } else {
+            Direct3DManager::Instance().SetPixelShader(m_pCommonPixelShader);
+            Direct3DManager::Instance().SetVertexShader(m_pCommonVetexShader);
+        }
+    }
+
     m_pCarController->Update();    
     Camera::Instance().Update();
 }
@@ -95,73 +122,77 @@ void MainScene::OnRelease(){
 }
 
 void MainScene::Render() {
-    // render shadow map
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::BeginRenderShadowMap,
-        nullptr
-    });
-
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::ClearDepthStencilBuffer,
-        nullptr
-    });
-
-    if (m_pLight) {
-        std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
-            const auto v4EyePose = Camera::Instance().GetEyePos();
-            LightCommonPixelShaderBuffer bfBuffer;
-            bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
-            bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
-
-            return bfBuffer;
-        };
+    if (m_bIsRenderShadow) {
+        // render shadow map
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+            RenderCommandType::BeginRenderShadowMap,
+            nullptr
+        });
 
         RenderCommandQueueManager::Instance().Push(RenderCommand {
-                RenderCommandType::SetLightInfo,
-                fCallback
-            }
-        );
-    }
-    this->RenderGameObjects();
+            RenderCommandType::ClearDepthStencilBuffer,
+            nullptr
+        });
 
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::EndRenderShadowMap,
-        nullptr
-    });
+        if (m_pLight) {
+            std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
+                const auto v4EyePose = Camera::Instance().GetEyePos();
+                LightCommonPixelShaderBuffer bfBuffer;
+                bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
+                bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
 
-    // render scene
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::ClearColorBuffer,
-        nullptr
-    });
+                return bfBuffer;
+            };
 
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::ClearDepthStencilBuffer,
-        nullptr
-    });
-
-    if (m_pLight) {
-        std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
-            const auto v4EyePose = Camera::Instance().GetEyePos();
-            LightCommonPixelShaderBuffer bfBuffer;
-            bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
-            bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
-
-            return bfBuffer;
-        };
+            RenderCommandQueueManager::Instance().Push(RenderCommand {
+                    RenderCommandType::SetLightInfo,
+                    fCallback
+                }
+            );
+        }
+        this->RenderGameObjects();
 
         RenderCommandQueueManager::Instance().Push(RenderCommand {
-                RenderCommandType::SetLightInfo,
-                fCallback
-            }
-        );
+            RenderCommandType::EndRenderShadowMap,
+            nullptr
+        });
+
+        // render scene
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+            RenderCommandType::ClearColorBuffer,
+            nullptr
+        });
+
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+            RenderCommandType::ClearDepthStencilBuffer,
+            nullptr
+        });
+
+        if (m_pLight) {
+            std::function<LightCommonPixelShaderBuffer(void)> fCallback = [this]() {
+                const auto v4EyePose = Camera::Instance().GetEyePos();
+                LightCommonPixelShaderBuffer bfBuffer;
+                bfBuffer.m_f3LightPos = m_pLight->m_f3LightPos;
+                bfBuffer.m_f3ViewPos = { DirectX::XMVectorGetX(v4EyePose), DirectX::XMVectorGetY(v4EyePose), DirectX::XMVectorGetZ(v4EyePose)};
+
+                return bfBuffer;
+            };
+
+            RenderCommandQueueManager::Instance().Push(RenderCommand {
+                    RenderCommandType::SetLightInfo,
+                    fCallback
+                }
+            );
+        }
+
+        RenderCommandQueueManager::Instance().Push(RenderCommand {
+            RenderCommandType::SetShadowMapTexture,
+            nullptr
+        });
+
+        this->RenderGameObjects();
+        this->RenderSkyBox();
+    } else {
+        Scene::Render();
     }
-
-    RenderCommandQueueManager::Instance().Push(RenderCommand {
-        RenderCommandType::SetShadowMapTexture,
-        nullptr
-    });
-
-    this->RenderGameObjects();
-    this->RenderSkyBox();
 }

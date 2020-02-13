@@ -166,6 +166,10 @@ bool Direct3DManager::_InitSamplerState() {
     dsdColorMapDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     dsdColorMapDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     dsdColorMapDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    dsdColorMapDesc.BorderColor[0] = 1.0f;
+    dsdColorMapDesc.BorderColor[1] = 1.0f;
+    dsdColorMapDesc.BorderColor[2] = 1.0f;
+    dsdColorMapDesc.BorderColor[3] = 1.0f;
     dsdColorMapDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
     dsdColorMapDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
     dsdColorMapDesc.MaxLOD = D3D11_FLOAT32_MAX;

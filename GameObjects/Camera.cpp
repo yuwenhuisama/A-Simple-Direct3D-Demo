@@ -50,6 +50,7 @@ void Camera::Update() {
         auto& fTheta = m_tiThirdPersonInfo.m_fTheta;
         auto& fPhi = m_tiThirdPersonInfo.m_fPhi;
         auto& fDistance = m_tiThirdPersonInfo.m_fDistance;
+        auto& fMiddleScaleSpeed = m_tiThirdPersonInfo.m_fMiddlScaleSpeed;
 
         if (InputManager::Instance().IsMouseLeftButtonDown()) {
             const auto fDx = InputManager::Instance().GetMouseDX();
@@ -60,17 +61,34 @@ void Camera::Update() {
 
             if (fTheta >= DirectX::XM_PI) {
                 fTheta = DirectX::XM_PI - 0.1f;
-            } else if (fTheta <= 0.0f) {
-                fTheta = 0.1f;
+            } else if (fTheta <=  DirectX::XM_PIDIV2 + 0.1f) {
+                fTheta = DirectX::XM_PIDIV2 + 0.1f;
             }
         }
 
-        const auto uMiddleOffset = InputManager::Instance().GetMouseDZ();
-        fDistance -= uMiddleOffset * 0.01f;
+        const auto nMiddleOffset = InputManager::Instance().GetMouseDZ();
+
+        if (nMiddleOffset == 0) {
+            if (fMiddleScaleSpeed > 0) {
+                fMiddleScaleSpeed -= 0.001f;
+            } else {
+                fMiddleScaleSpeed += 0.001f;
+            }
+            if (abs(fMiddleScaleSpeed) <= 1e-4f) {
+                fMiddleScaleSpeed = 0.0f;
+            }
+        } else {
+            fMiddleScaleSpeed += nMiddleOffset * 0.0005f;
+        }
+
+        // fDistance -= uMiddleOffset * 0.01f;
+        fDistance -= fMiddleScaleSpeed;
         if (fDistance <= cCamearaConfigure.m_fThirdMinDistance) {
             fDistance = cCamearaConfigure.m_fThirdMinDistance;
+            fMiddleScaleSpeed = 0;
         } else if (fDistance >= cCamearaConfigure.m_fThirdMaxDistance) {
             fDistance = cCamearaConfigure.m_fThirdMaxDistance;
+            fMiddleScaleSpeed = 0;
         }
         
         DirectX::XMVECTOR v3Dist = {

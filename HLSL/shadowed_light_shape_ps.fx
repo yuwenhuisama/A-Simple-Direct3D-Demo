@@ -20,16 +20,30 @@ float CalculateShadow(PixelInput pin) {
     projCoords.x = (pin.PosLightSpaceL.x / pin.PosLightSpaceL.w) * 0.5 + 0.5;
     projCoords.y = (pin.PosLightSpaceL.y / pin.PosLightSpaceL.w) * (-0.5) + 0.5;
 
-    float closestDepth = shadowMap.Sample(colorSampler, projCoords).r;
+    // float closestDepth = shadowMap.Sample(colorSampler, projCoords).r;
     float currentDepth = pin.PosLightSpaceL.z / pin.PosLightSpaceL.w;
 
     // float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-    // float3 normal = normalize(pin.Normal);
-    // float3 lightDir = normalize(gLightPos.xyz - pin.PosLightSpaceL.xyz);
+    float3 normal = normalize(pin.Normal);
+    float3 lightDir = normalize(gLightPos.xyz - pin.PosLightSpaceL.xyz);
 
-    // float bias = max(0.01 * (1.0 - dot(normal, lightDir)), 0.001);
-    float bias = -0.001;
-    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    float bias = max(0.001 * (1.0 - dot(normal, lightDir)), 0.0001);
+    // float bias = -0.001;
+    // float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    float shadow = 0;
+
+    // PCF
+    float tw, th;
+    shadowMap.GetDimensions(tw, th);
+    float2 textureSize = 1.0 / float2(tw, th);
+    for (int x = -2; x < 2; ++x) {
+        for (int y = -2; y < 2; ++y) {
+            float pcfDepth = shadowMap.Sample(colorSampler, projCoords.xy + float2(x, y)).r;
+            shadow += (currentDepth - bias > pcfDepth ? 1.0 : 0.0);
+        }
+    }
+
+    shadow /= 25.0;
 
     if (currentDepth > 1.0) {
         shadow = 0.0;

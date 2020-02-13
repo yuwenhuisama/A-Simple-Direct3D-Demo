@@ -15,9 +15,9 @@ int _stdcall WinMain(
     LPSTR lpCmdLine,
     int nCmdShow
 ) {
-    if (Direct3DManager::Instance().Initialize(hInstance, 1024, 768, true)
-        && InputManager::Instance().Initialize(hInstance)
-        && GameConfigure::Instance().Initialize("game_configure.json")) {
+    if (GameConfigure::Instance().Initialize("game_configure.json")
+        && Direct3DManager::Instance().Initialize(hInstance, 1600, 900, true)
+        && InputManager::Instance().Initialize(hInstance)) {
         Direct3DManager::Instance().StartWindow(nCmdShow);
 
         Timer::Instance().Initialize();

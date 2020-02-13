@@ -82,6 +82,12 @@ bool GameConfigure::Initialize(std::string_view strvConfigureFileName) {
     auto objLight = this->m_dcDocument.FindMember("light")->value.GetObject();
     vcFloats = this->GetFloatArray(objLight, "position");
     m_cLightConfigure.m_f3Position = { vcFloats[0], vcFloats[1], vcFloats[2] };
+    vcFloats = this->GetFloatArray(objLight, "light_eye_position");
+    m_cLightConfigure.m_f3LightEyePosition = { vcFloats[0], vcFloats[1], vcFloats[2] };
+    vcFloats = this->GetFloatArray(objLight, "projection_region");
+    m_cLightConfigure.m_f4ProjectionRegion = { vcFloats[0], vcFloats[1], vcFloats[2], vcFloats[3] };
+    auto vcInts = this->GetIntArray(objLight, "shadow_map_textue_size");
+    m_cLightConfigure.m_i2ShadowMapTextureSize = { vcInts[0], vcInts[1] };
 
     return true;
 }

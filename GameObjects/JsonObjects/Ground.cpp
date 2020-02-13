@@ -269,11 +269,19 @@ void Ground::_DecideGeneratingRegion(const RegionRect& v4Region, size_t uLevel) 
 
     const std::array<RegionRect, 4> arrRegions { rcLeftTop, rcRightTop, rcLeftBottom, rcRightBottom };
 
+    const auto fMin = GameConfigure::Instance().GetRandomGroundConfigure().m_fMinRegionSize;
+
     if (uLevel >= GameConfigure::Instance().GetRandomGroundConfigure().m_uGenerateLevelFrom) {
         for (const auto& region : arrRegions) {
             if (!(region.right - region.left < fMinRegionSize || region.bottom - region.top < fMinRegionSize)) {
                 if (D3DHelper::RandomBool(GameConfigure::Instance().GetRandomGroundConfigure().m_fGenerateRate)) {
-                    m_stRegionSet.push_back(region);
+                    const auto fCx1 = max(region.left, -fMin);
+                    const auto fCy1 = max(region.top, -fMin);
+                    const auto fCx2 = max(region.right, fMin);
+                    const auto fCy2 = max(region.bottom, fMin);
+                    if (!(fCx1 > fCx2 || fCy1 > fCy2)) {
+                        m_stRegionSet.push_back(region);
+                    }
                 } else {
                         this->_DecideGeneratingRegion(region, uLevel + 1);
                 }

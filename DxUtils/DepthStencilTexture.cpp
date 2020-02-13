@@ -3,8 +3,7 @@
 #include "DxUtils/Direct3DManager.h"
 #include "DirectXTex.h"
 
-constexpr UINT c_uDepthStencilTextureWidth = 8192u;
-constexpr UINT c_uDepthStencilTextureHeight = 8192u;
+#include "GameUtils/GameConfigure.h"
 
 DepthStencilTexture::~DepthStencilTexture() {
     this->_Release();
@@ -13,8 +12,8 @@ DepthStencilTexture::~DepthStencilTexture() {
 bool DepthStencilTexture::_InitializeDepthStencilTexture() {
     D3D11_TEXTURE2D_DESC t2ddDepthBufferDesc;
     memset(&t2ddDepthBufferDesc, 0, sizeof(D3D11_TEXTURE2D_DESC));
-    t2ddDepthBufferDesc.Width = c_uDepthStencilTextureWidth;
-    t2ddDepthBufferDesc.Height = c_uDepthStencilTextureHeight;
+    t2ddDepthBufferDesc.Width = GameConfigure::Instance().GetLightConfigure().m_i2ShadowMapTextureSize.x;
+    t2ddDepthBufferDesc.Height = GameConfigure::Instance().GetLightConfigure().m_i2ShadowMapTextureSize.y;
     t2ddDepthBufferDesc.MipLevels = 1;
     t2ddDepthBufferDesc.ArraySize = 1;
     t2ddDepthBufferDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
@@ -62,8 +61,8 @@ bool DepthStencilTexture::Initialize() {
         goto failed_exit;
     }
 
-    m_vViewPort.Width = static_cast<float>(c_uDepthStencilTextureWidth);
-    m_vViewPort.Height = static_cast<float>(c_uDepthStencilTextureHeight);
+    m_vViewPort.Width = static_cast<float>(GameConfigure::Instance().GetLightConfigure().m_i2ShadowMapTextureSize.x);
+    m_vViewPort.Height = static_cast<float>(GameConfigure::Instance().GetLightConfigure().m_i2ShadowMapTextureSize.y);
     m_vViewPort.MinDepth = 0.0f;
     m_vViewPort.MaxDepth = 1.0f;
     m_vViewPort.TopLeftX = 0.0f;

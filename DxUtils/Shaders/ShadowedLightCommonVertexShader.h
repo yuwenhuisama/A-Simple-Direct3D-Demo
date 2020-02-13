@@ -5,7 +5,6 @@
 class ShadowedLightCommonVertexShader : public VertexShaderBase {
 private:
     ID3D11Buffer* m_pWVPBuffer = nullptr;
-    DirectX::XMFLOAT3 m_f3LightPos = { 0.0f, 0.0f, 0.0f };
 
 public:
     ShadowedLightCommonVertexShader();

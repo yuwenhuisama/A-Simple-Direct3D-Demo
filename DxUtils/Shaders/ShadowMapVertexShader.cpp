@@ -63,18 +63,19 @@ void ShadowMapVertexShader::Apply(const RenderCommand& rcCommand) {
 
         const auto& mtWorldMatrix = std::any_cast<std::function<DirectX::XMMATRIX(void)>>(rcCommand.m_objRenderInfo)();
 
-        const auto& f4Region = GameConfigure::Instance().GetRandomGroundConfigure();
+        const auto& f4Region = GameConfigure::Instance().GetLightConfigure().m_f4ProjectionRegion;
         const auto& mtProjMatrix = DirectX::XMMatrixOrthographicOffCenterLH(
-            f4Region.m_f4Region.x,
-            f4Region.m_f4Region.z,
-            f4Region.m_f4Region.w,
-            f4Region.m_f4Region.y,
-            -10.0f,
+            f4Region.x,
+            f4Region.z,
+            f4Region.w,
+            f4Region.y,
+            0.0f,
             100.0f
         );
 
+        const auto& f3LightPos = GameConfigure::Instance().GetLightConfigure().m_f3LightEyePosition;
         const auto& mtViewMatrix = DirectX::XMMatrixLookAtLH(
-            { m_f3LightPos.x, m_f3LightPos.y, m_f3LightPos.z },
+            { f3LightPos.x, f3LightPos.y, f3LightPos.z },
             { 0.0f, 0.0f, 0.0f },
             { 1.0f, 0.0f, 0.0f });
 
@@ -84,10 +85,5 @@ void ShadowMapVertexShader::Apply(const RenderCommand& rcCommand) {
         bfBuffer.m_mtProj = DirectX::XMMatrixTranspose(mtProjMatrix);
 
         this->UpdateWVPMatrix(bfBuffer);
-    } else if (rcCommand.m_eType == RenderCommandType::SetLightInfo) {
-        auto fCallback = std::any_cast<std::function<LightCommonPixelShaderBuffer(void)>>(rcCommand.m_objRenderInfo);
-        auto bfLightInfo = fCallback();
-
-        m_f3LightPos = bfLightInfo.m_f3LightPos;
     }
 }
