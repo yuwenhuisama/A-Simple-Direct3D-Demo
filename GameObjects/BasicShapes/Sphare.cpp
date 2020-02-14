@@ -66,7 +66,7 @@ void Sphare::PreInitialize() {
 
     m_msMesh.AppendVertex(vtBottomVertex);
 
-    for (auto i = 1; i <= m_uSliceCount; ++i) {
+    for (auto i = 1u; i <= m_uSliceCount; ++i) {
         m_msMesh.AppendIndex(0);
         m_msMesh.AppendIndex(i + 1);
         m_msMesh.AppendIndex(i);
