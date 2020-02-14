@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "DxUtils/D3DHelper.hpp"
 #include "DxUtils/Direct3DManager.h"
 #include "DxUtils/InputManager.h"
 
@@ -15,16 +16,25 @@ int _stdcall WinMain(
     LPSTR lpCmdLine,
     int nCmdShow
 ) {
-    if (GameConfigure::Instance().Initialize("game_configure.json")
-        && Direct3DManager::Instance().Initialize(hInstance, 1600, 900, true)
-        && InputManager::Instance().Initialize(hInstance)) {
-        Direct3DManager::Instance().StartWindow(nCmdShow);
+    auto& gConfigure = GameConfigure::Instance();
+    if (gConfigure.Initialize("game_configure.json")) {
+        auto wstrTitle = D3DHelper::StringToWString(gConfigure.GetWindowConfigure().m_strTitle);
+        auto i2Size = gConfigure.GetWindowConfigure().m_i2Size;
 
-        Timer::Instance().Initialize();
+        if (Direct3DManager::Instance().Initialize(hInstance, wstrTitle, i2Size.x, i2Size.y, true)
+            && InputManager::Instance().Initialize(hInstance)) {
+        
+            Direct3DManager::Instance().StartWindow(nCmdShow);
 
-        auto pScene = std::make_shared<MainScene>();
-        SceneManager::Instance().SwitchScene(pScene);
-        SceneManager::Instance().StartScene();
+            Timer::Instance().Initialize();
+
+            auto pScene = std::make_shared<MainScene>();
+            SceneManager::Instance().SwitchScene(pScene);
+            SceneManager::Instance().StartScene();
+
+            Direct3DManager::Instance().Release();
+            InputManager::Instance().Release();
+        }
     }
 
     return 0;

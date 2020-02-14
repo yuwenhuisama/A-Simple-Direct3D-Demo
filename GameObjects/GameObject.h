@@ -16,7 +16,7 @@ enum class RotationOrderAxis {
 };
 
 class GameObject : public std::enable_shared_from_this<GameObject>{
-protected:
+private:
     std::string m_strTag = "";
 
     DirectX::XMFLOAT3 m_v3Position { 0, 0, 0 };

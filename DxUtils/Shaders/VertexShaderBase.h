@@ -5,7 +5,7 @@
 #include <vector>
 
 class VertexShaderBase : public ShaderBase {
-protected:
+private:
     ID3D11VertexShader* m_pVertexShader = nullptr;
     ID3D11InputLayout* m_pInputLayout = nullptr;
 

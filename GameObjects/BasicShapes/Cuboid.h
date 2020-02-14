@@ -15,7 +15,7 @@ private:
 public:
     Cuboid() = delete;
     Cuboid(float fWidth, float fHeight, float fDepth);
-    ~Cuboid() = default;
+    virtual ~Cuboid() = default;
 
     virtual Vertex* GetVertexes() override;
     virtual UINT GetVertexesCount() override;

@@ -208,7 +208,7 @@ LRESULT Direct3DManager::_WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
 		return DefWindowProc(hwnd, message, wParam, lParam);
 }
 
-bool Direct3DManager::_InitWindow(HINSTANCE hInstance, UINT uWidth, UINT uHeight) {
+bool Direct3DManager::_InitWindow(HINSTANCE hInstance, std::wstring_view wstring_view, UINT uWidth, UINT uHeight) {
     m_uWidth = uWidth;
     m_uHeight = uHeight;
 
@@ -220,7 +220,7 @@ bool Direct3DManager::_InitWindow(HINSTANCE hInstance, UINT uWidth, UINT uHeight
     wndClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wndClass.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
     wndClass.lpszMenuName = nullptr;
-    wndClass.lpszClassName = "IrisAppWindow";
+    wndClass.lpszClassName = "MyD3DAppWindow";
 
     if (!RegisterClassEx(&wndClass)) {
         return false;
@@ -229,8 +229,8 @@ bool Direct3DManager::_InitWindow(HINSTANCE hInstance, UINT uWidth, UINT uHeight
     RECT rcArea = { 0, 0, static_cast<long>(uWidth), static_cast<long>(uHeight) };
     AdjustWindowRect(&rcArea, WS_OVERLAPPEDWINDOW, false);
 
-    const HWND hHwnd = CreateWindowW(L"IrisAppWindow",
-        L"DirectX 11 Demo",
+    const HWND hHwnd = CreateWindowW(L"MyD3DAppWindow",
+        wstring_view.data(),
         WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX,
         0,
         0,
@@ -250,8 +250,18 @@ bool Direct3DManager::_InitWindow(HINSTANCE hInstance, UINT uWidth, UINT uHeight
     return true;
 }
 
-bool Direct3DManager::Initialize(HINSTANCE hInstance,UINT uWidth, UINT uHeight, bool bEnable4xMsaa) {
-    if (!_InitWindow(hInstance, uWidth, uHeight)) {
+void Direct3DManager::Release() {
+    D3DHelper::SafeRelease(m_pDevice);
+    D3DHelper::SafeRelease(m_pDeviceContext);
+    D3DHelper::SafeRelease(m_pSwapChain);
+    D3DHelper::SafeRelease(m_pRenderTargetView);
+    D3DHelper::SafeRelease(m_pDepthStencilView);
+    D3DHelper::SafeRelease(m_pDepthStencilBuffer);
+    D3DHelper::SafeRelease(m_pColorMapSampler);
+}
+
+bool Direct3DManager::Initialize(HINSTANCE hInstance, std::wstring_view wstrTitle, UINT uWidth, UINT uHeight, bool bEnable4xMsaa) {
+    if (!_InitWindow(hInstance, wstrTitle, uWidth, uHeight)) {
         goto failed_exit;
     }
 

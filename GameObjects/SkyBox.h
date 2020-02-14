@@ -24,7 +24,7 @@ private:
 
 public:
     SkyBox() = default;
-    ~SkyBox() = default;
+    ~SkyBox();
 
     bool Initialize();
 

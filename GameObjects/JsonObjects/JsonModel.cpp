@@ -165,6 +165,7 @@ bool JsonModel::Initialize() {
 
     if (!ifsFile) {
         ifsFile.close();
+        assert(false);
         return false;
     }
 
@@ -176,6 +177,7 @@ bool JsonModel::Initialize() {
 
     rapidjson::Document dDoc;
     if (dDoc.Parse(strContent.c_str()).HasParseError()) {
+        assert(false);
         return false;
     }
 

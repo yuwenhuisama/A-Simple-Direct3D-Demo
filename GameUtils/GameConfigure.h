@@ -60,6 +60,11 @@ struct SkyBoxConfigure {
     std::string m_strTexture;
 };
 
+struct WindowConfigure {
+    DirectX::XMINT2 m_i2Size = { 0, 0 };
+    std::string m_strTitle;
+};
+
 class GameConfigure : public Configure {
 private:
     CarConfigure m_cCarConfigure;
@@ -67,6 +72,7 @@ private:
     RandomGroundConfigure m_cRandomGroundConfigure;
     LightConfigure m_cLightConfigure;
     SkyBoxConfigure m_cSkyBoxConfigure;
+    WindowConfigure m_cWindowConfigure;
 
 private:
     GameConfigure();
@@ -81,6 +87,7 @@ public:
     const RandomGroundConfigure& GetRandomGroundConfigure() const { return m_cRandomGroundConfigure; }
     const LightConfigure& GetLightConfigure() const { return m_cLightConfigure; }
     const SkyBoxConfigure& GetSkyBoxConfigure() const { return m_cSkyBoxConfigure; }
+    const WindowConfigure& GetWindowConfigure() const { return m_cWindowConfigure; }
 };
 
 #endif

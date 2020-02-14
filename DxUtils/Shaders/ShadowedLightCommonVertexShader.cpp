@@ -2,8 +2,14 @@
 #include "DxUtils/Direct3DManager.h"
 #include "GameObjects/Camera.h"
 #include "GameUtils/GameConfigure.h"
+#include "DxUtils/D3DHelper.hpp"
 
 ShadowedLightCommonVertexShader::ShadowedLightCommonVertexShader() : VertexShaderBase() {}
+
+ShadowedLightCommonVertexShader::~ShadowedLightCommonVertexShader() {
+    D3DHelper::SafeRelease(m_pWVPBuffer);
+}
+
 
 std::wstring ShadowedLightCommonVertexShader::GetShaderFile() {
     return L"HLSL/shadowed_light_shape_vs.fx";

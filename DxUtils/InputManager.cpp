@@ -6,6 +6,18 @@ InputManager& InputManager::Instance() {
     return instance;
 }
 
+void InputManager::Release() {
+    if (m_pKeyBoardInputDevice) {
+        m_pKeyBoardInputDevice->Unacquire();
+        D3DHelper::SafeRelease(m_pKeyBoardInputDevice);
+    }
+
+    if (m_pMouseInputDevice){
+        m_pMouseInputDevice->Unacquire();
+        D3DHelper::SafeRelease(m_pMouseInputDevice);
+    }
+}
+
 bool InputManager::Initialize(HINSTANCE hInstance) {
     IDirectInput8* pDirectInputObject = nullptr;
 
@@ -104,13 +116,5 @@ bool InputManager::IsMouseRightButtonDown() const {
 }
 
 InputManager::~InputManager() {
-    if (m_pKeyBoardInputDevice) {
-        m_pKeyBoardInputDevice->Unacquire();
-        D3DHelper::SafeRelease(m_pKeyBoardInputDevice);
-    }
 
-    if (m_pMouseInputDevice){
-        m_pMouseInputDevice->Unacquire();
-        D3DHelper::SafeRelease(m_pMouseInputDevice);
-    }
 }

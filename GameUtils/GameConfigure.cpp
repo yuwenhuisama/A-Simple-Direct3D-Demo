@@ -89,5 +89,13 @@ bool GameConfigure::Initialize(std::string_view strvConfigureFileName) {
     auto vcInts = this->GetIntArray(objLight, "shadow_map_textue_size");
     m_cLightConfigure.m_i2ShadowMapTextureSize = { vcInts[0], vcInts[1] };
 
+    // window
+    assert(this->m_dcDocument.HasMember("window"));
+    auto objWindow = this->m_dcDocument.FindMember("window")->value.GetObject();
+    vcInts = this->GetIntArray(objWindow, "size");
+    m_cWindowConfigure.m_i2Size = { vcInts[0], vcInts[1] };
+    auto strTitle = this->GetString(objWindow, "title");
+    m_cWindowConfigure.m_strTitle = strTitle;
+
     return true;
 }

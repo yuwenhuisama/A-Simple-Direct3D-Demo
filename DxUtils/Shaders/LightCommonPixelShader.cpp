@@ -1,5 +1,6 @@
 #include "LightCommonPixelShader.h"
 #include "DxUtils/Direct3DManager.h"
+#include "DxUtils/D3DHelper.hpp"
 
 #include <functional>
 
@@ -8,7 +9,7 @@ LightCommonPixelShader::LightCommonPixelShader(): PixelShaderBase() {
 }
 
 LightCommonPixelShader::~LightCommonPixelShader() {
-
+    D3DHelper::SafeRelease(m_pLightInfo);
 }
 
 std::wstring LightCommonPixelShader::GetShaderFile() {

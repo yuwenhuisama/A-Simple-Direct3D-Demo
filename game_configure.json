@@ -1,4 +1,9 @@
 {
+    "window": {
+        "title" : "DirectX 11 Demo",
+        "size": [1600, 900]
+    },
+
     "car": {
         "max_speed_forward" : 0.2,
         "min_speed_back": -0.2,

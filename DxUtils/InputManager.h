@@ -24,6 +24,8 @@ private:
 public:
     static InputManager& Instance();
 
+    void Release();
+
     bool Initialize(HINSTANCE hInstance);
     void Update();
 

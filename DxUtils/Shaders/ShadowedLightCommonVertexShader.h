@@ -8,7 +8,7 @@ private:
 
 public:
     ShadowedLightCommonVertexShader();
-    virtual ~ShadowedLightCommonVertexShader() = default;
+    virtual ~ShadowedLightCommonVertexShader();
 
     virtual std::wstring GetShaderFile() override;
     virtual std::string GetShaderEntryName() override;

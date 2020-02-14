@@ -4,7 +4,7 @@
 #include "ShaderBase.h"
 
 class PixelShaderBase : public ShaderBase {
-protected:
+private:
     ID3D11PixelShader* m_pPixelShader = nullptr;
 
 public:

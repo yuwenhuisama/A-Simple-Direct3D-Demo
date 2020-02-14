@@ -66,7 +66,7 @@ private:
     bool _InitSwapChain(UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
     bool _InitRenderTargetView();
     bool _InitDepthStencilView(UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
-    bool _InitWindow(HINSTANCE hInstance, UINT uWidth, UINT uHeight);
+    bool _InitWindow(HINSTANCE hInstance, std::wstring_view wstrTitle, UINT uWidth, UINT uHeight);
 
     static LRESULT _WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     
@@ -114,7 +114,9 @@ public:
 
     HWND GetHWND() const { return m_hWND; }
 
-    bool Initialize(HINSTANCE hInstance, UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
+    void Release();
+
+    bool Initialize(HINSTANCE hInstance, std::wstring_view wstrTitle, UINT uWidth, UINT uHeight, bool bEnable4xMsaa);
     void StartWindow(int nShowCmd);
     void Update();
     void _Render();

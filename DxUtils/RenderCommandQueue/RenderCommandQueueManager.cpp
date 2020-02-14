@@ -72,7 +72,6 @@ void RenderCommandQueueManager::_SetBaseModelRenderInfo(RenderCommand& rcCommand
 }
 
 void RenderCommandQueueManager::_SetTexture(RenderCommand& rcCommand) {
-    // if( )
     auto pTexture = std::any_cast<std::shared_ptr<Texture>>(rcCommand.m_objRenderInfo);
     Direct3DManager::Instance().ApplyTexture(pTexture);
 }

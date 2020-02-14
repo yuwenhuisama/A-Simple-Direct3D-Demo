@@ -4,9 +4,17 @@
 #include "DxUtils/Direct3DManager.h"
 #include "GameUtils/GameConfigure.h"
 
+#include "DxUtils/D3DHelper.hpp"
+
 #include "GameObject.h"
 
 #include <functional>
+
+SkyBox::~SkyBox() {
+    D3DHelper::SafeRelease(m_pIndexedBuffer);
+    D3DHelper::SafeRelease(m_pVertexBuffer);
+}
+
 
 constexpr UINT c_arrIndices[] = {
     0, 1, 2,
