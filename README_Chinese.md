@@ -31,6 +31,8 @@
 ```
 ADD_DEFINITIONS("-D_ENABLE_EXTENDED_ALIGNED_STORAGE")
 ```
+以启用内存对齐扩展。
+
 类似的报错为：
 ```
 error C2338: You've instantiated std::aligned_storage<Len, Align> with an extended alignment (in other words, Align > alignof(max_align_t)).
@@ -40,7 +42,6 @@ aligned_storage with extended alignments). Please define either (1) _ENABLE_EXTE
 message and that you actually want a type with an extended alignment, or (2) _DISABLE_EXTENDED_ALIGNED_STORAGE to silence this message and
 get the old non-conformant behavior.
 ```
-以启用内存对齐扩展。
 - 编译exe使用的编译器版本为：`MSVC 19.24.28314 x64`，运行需要安装`Visual Studio 2019运行时`：https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 - 随机场景生成方法参见`GameObject/JsonObjects/Ground.cpp`中的`_DecideGeneratingRegion()`和`_RandomGenerateModels()`方法
 - 光照模型使用`Blinn-Phong`光照模型，阴影生成算法使用了`阴影贴图`，具体实现参见`HLSL/shadow_map_shape_ps.fx`、`HLSL/shadow_map_shape_vs.fx`以及`DxUtils/Shaders/SHdowedLightCommonVertexShader.h/.cpp`、`DxUtils/Shaders/SHdowedLightCommonPixelShader.h/.cpp`
