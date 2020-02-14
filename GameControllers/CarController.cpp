@@ -12,8 +12,23 @@ void CarController::Update() {
     const auto& cCarConfigure = GameConfigure::Instance().GetCarConfigure();
     auto& iManager = InputManager::Instance();
 
-    // move up
-    if (iManager.IsKeyDown(DIK_W)) {
+    // stop
+    if (iManager.IsKeyDown(DIK_SPACE)) {
+        if (m_fSpeed > 0) {
+            if (abs(m_fSpeed) > cCarConfigure.m_fAccSpeedBack) {
+                m_fSpeed -= cCarConfigure.m_fAccSpeedBack;
+            } else {
+                m_fSpeed = 0.0f;
+            }
+        } else {
+            if (abs(m_fSpeed) > cCarConfigure.m_fAccSpeedForward) {
+                m_fSpeed += cCarConfigure.m_fAccSpeedForward;
+            } else {
+                m_fSpeed = 0.0f;
+            }
+        }
+    }
+    else if (iManager.IsKeyDown(DIK_W)) {
         m_fSpeed += cCarConfigure.m_fAccSpeedForward;
     }
     // move back
@@ -21,10 +36,14 @@ void CarController::Update() {
         m_fSpeed -= cCarConfigure.m_fAccSpeedBack;
     }
     else {
-        if (m_fSpeed > 0) {
-            m_fSpeed -= cCarConfigure.m_fAccStop;
-        } else if (m_fSpeed < 0){
-            m_fSpeed += cCarConfigure.m_fAccStop;
+        if (abs(m_fSpeed) > cCarConfigure.m_fAccStop) {
+            if (m_fSpeed > 0.0f) {
+                m_fSpeed -= cCarConfigure.m_fAccStop;
+            } else if (m_fSpeed < 0.0f){
+                m_fSpeed += cCarConfigure.m_fAccStop;
+            }
+        } else {
+            m_fSpeed = 0.0f;
         }
     }
 

@@ -279,7 +279,7 @@ void Ground::_DecideGeneratingRegion(const RegionRect& v4Region, size_t uLevel) 
                     const auto fCy1 = max(region.top, -fMin);
                     const auto fCx2 = max(region.right, fMin);
                     const auto fCy2 = max(region.bottom, fMin);
-                    if (!(fCx1 > fCx2 || fCy1 > fCy2)) {
+                    if (fCx1 < fCx2 && fCy1 < fCy2) {
                         m_stRegionSet.push_back(region);
                     }
                 } else {
