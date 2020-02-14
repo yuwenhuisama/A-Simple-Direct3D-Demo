@@ -23,7 +23,23 @@
 - 使用`Y`键能够打开或者关闭阴影效果
 
 ## 相关说明
+- 如果因为阴影贴图尺寸导致显存占用太大或者初始化失败，请调整`game_configure.jgon`文件中的`"light"`字段中的`"shadow_map_textue_size"`以控制阴影贴图的大小
 - 源码使用了`C++ 17`的特性，因此编译器需要打开`C++ 17`的编译开关（如果默认没有打开）
+- 如果编译的时候报内存对齐问题（如`Visual Studio 2017 15.8`版本），请在`CMakeList.txt`中加入
+```
+ADD_DEFINITIONS("-D_ENABLE_EXTENDED_ALIGNED_STORAGE")
+```
+类似的报错为：
+```
+error C2338: You've instantiated std::aligned_storage<Len, Align> with an extended alignment (in other words, Align > alignof(max_align_t)).
+Before VS 2017 15.8, the member type would non-conformingly have an alignment of only alignof(max_align_t).
+VS 2017 15.8 was fixed to handle this correctly, but the fix inherently changes layout and breaks binary compatibility (*only* for uses of
+aligned_storage with extended alignments). Please define either (1) _ENABLE_EXTENDED_ALIGNED_STORAGE to acknowledge that you understand this
+message and that you actually want a type with an extended alignment, or (2) _DISABLE_EXTENDED_ALIGNED_STORAGE to silence this message and
+get the old non-conformant behavior.
+```
+以启用内存对齐扩展。
+- 编译exe使用的编译器版本为：`MSVC 19.24.28314 x64`，运行需要安装`Visual Studio 2019运行时`：https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 - 随机场景生成方法参见`GameObject/JsonObjects/Ground.cpp`中的`_DecideGeneratingRegion()`和`_RandomGenerateModels()`方法
 - 光照模型使用`Blinn-Phong`光照模型，阴影生成算法使用了`阴影贴图`，具体实现参见`HLSL/shadow_map_shape_ps.fx`、`HLSL/shadow_map_shape_vs.fx`以及`DxUtils/Shaders/SHdowedLightCommonVertexShader.h/.cpp`、`DxUtils/Shaders/SHdowedLightCommonPixelShader.h/.cpp`
 - 渲染框架实现了一个渲染命令队列，具体参见`DxUtils/RenderCommandQueueManager.h/.cpp`

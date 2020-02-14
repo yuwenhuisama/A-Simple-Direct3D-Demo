@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.15.0)
 project(DirectX11Task VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(RapidJSON CONFIG REQUIRED)
+FIND_PACKAGE(RapidJSON CONFIG REQUIRED)
+
+# ADD_DEFINITIONS("-D_ENABLE_EXTENDED_ALIGNED_STORAGE")
 
 SET(DIRECTX_DEPENDENCIES 
     dxgi.lib; Windowscodecs.lib; d3d10_1.lib; d3d11.lib;
